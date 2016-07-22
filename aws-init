@@ -14,7 +14,7 @@ gem install bundler
 pip install buildbot buildbot-slave awscli service-identity
 
 cd /
-git clone --bare --branch newarch https://xassembly-worker:$GITHUB_TOKEN@github.com/exactassembly/caiman.git
+git clone --bare --branch newarch https://xassembly-worker:$GIT_TOKEN@github.com/exactassembly/caiman.git
 git clone /caiman.git
 
 cd /caiman/gatoregg
