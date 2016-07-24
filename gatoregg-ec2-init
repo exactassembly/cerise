@@ -23,5 +23,5 @@ rake
 mkdir /build
 cd /build
 
-buildslave create-slave slave $BB_ADDRESS:9989 build-slave pass
+buildslave create-slave slave $MASTER_ADDRESS:9989 build-slave pass
 buildslave start slave

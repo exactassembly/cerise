@@ -7,3 +7,6 @@
 #### vagrant configuration
 * need to stage /build, stuff master.cfg into bb-ec2
 
+----
+
+* git token and buildmaster env vars
