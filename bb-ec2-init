@@ -1,0 +1,9 @@
+apt-get install -y python python-dev python-pip git
+
+pip install buildbot awscli service-identity
+
+# vagrant going to stage build and add master.cfg for us?
+mkdir /build
+cd /build
+buildbot create-master master
+buildbot start master
