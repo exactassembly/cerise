@@ -1,7 +1,7 @@
 #### buildslave decisions
 * ec2latent requires full spinup from AWS image 
     * need to reanalyze ec2-init and compartmentalize base image and init scripts
-* ssh exec more agnostic, easier to work with, allows direct awscli start/stop
+* awscli start/stop easier to work with
 * ec2 containers also incredibly appealing, allows moving existing docker API calls over to ec2 docker calls
 
 #### vagrant configuration
