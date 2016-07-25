@@ -1,3 +1,5 @@
+#!/bin/bash
+
 exec > ~/aws-init.log 2>&1
 
 echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" >> /etc/apt/sources.list.d/docker.list

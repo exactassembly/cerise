@@ -1,3 +1,5 @@
+#!/bin/bash
+
 apt-get install -y python python-dev python-pip git
 
 pip install buildbot awscli service-identity
