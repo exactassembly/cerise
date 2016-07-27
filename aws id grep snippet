@@ -1,0 +1,1 @@
+cat awsout | grep -m 1 "InstanceId" | tr '"' $'\n' | sed -n 4p
