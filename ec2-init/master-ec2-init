@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo 'export GIT_TOKEN = ""' >> /etc/aws-init.conf
+echo 'export SLAVE_PASS = ""' >> /etc/aws-init.conf
+
+exec > ~/aws-init.log 2>&1
+
+apt-get update
+apt-get install -y python python-dev python-pip git
+
+pip install service_identity buildbot awscli
+
+. /etc/aws-init.conf
+
+echo ". /etc/aws-init.conf" >> /home/ubuntu/.bashrc
+
+cd /build
+buildbot create-master master
+buildbot start master
+
+# --- SLAVE SPINUP ---
+# --- ADD ENVVARS TO SLAVE ---

@@ -12,7 +12,14 @@ apt-get install -y python python-dev python-pip docker-engine git
 source /usr/local/rvm/scripts/rvm
 gem install bundler
 
-pip install buildbot-slave
+pip install service_identity buildbot-slave awscli
+
+. /etc/aws-init.conf
+
+echo ". /etc/aws-init.conf" >> /home/ubuntu/.bashrc
+echo "start on runlevel [2345]" >> /etc/init/buildslave.conf
+echo "source /usr/local/rvm/scripts/rvm" >> /etc/init/buildslave.conf
+echo "exec buildslave start /build/slave" >> /etc/init/buildslave.conf
 
 cd /
 git clone --branch newarch https://xassembly-worker:$GIT_TOKEN@github.com/exactassembly/caiman.git
@@ -25,5 +32,5 @@ rake
 mkdir /build
 cd /build
 
-buildslave create-slave slave $MASTER_ADDRESS:9989 build-slave pass
+buildslave create-slave slave $MASTER_ADDRESS:9989 build-slave $SLAVE_PASS
 buildslave start slave
