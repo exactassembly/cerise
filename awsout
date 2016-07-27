@@ -1,0 +1,92 @@
+{
+    "OwnerId": "008583606530", 
+    "ReservationId": "r-7e630aa7", 
+    "Groups": [], 
+    "Instances": [
+        {
+            "Monitoring": {
+                "State": "disabled"
+            }, 
+            "PublicDnsName": "", 
+            "RootDeviceType": "ebs", 
+            "State": {
+                "Code": 0, 
+                "Name": "pending"
+            }, 
+            "EbsOptimized": false, 
+            "LaunchTime": "2016-07-27T21:56:15.000Z", 
+            "PrivateIpAddress": "172.31.20.106", 
+            "ProductCodes": [], 
+            "VpcId": "vpc-55f3c53d", 
+            "StateTransitionReason": "", 
+            "InstanceId": "i-cd06ca59", 
+            "ImageId": "ami-d732f0b7", 
+            "PrivateDnsName": "ip-172-31-20-106.us-west-2.compute.internal", 
+            "KeyName": "david-kp", 
+            "SecurityGroups": [
+                {
+                    "GroupName": "ssh-security-group", 
+                    "GroupId": "sg-49fe1326"
+                }
+            ], 
+            "ClientToken": "", 
+            "SubnetId": "subnet-28f3c540", 
+            "InstanceType": "t2.micro", 
+            "NetworkInterfaces": [
+                {
+                    "Status": "in-use", 
+                    "MacAddress": "06:5d:6d:0e:e8:af", 
+                    "SourceDestCheck": true, 
+                    "VpcId": "vpc-55f3c53d", 
+                    "Description": "", 
+                    "NetworkInterfaceId": "eni-a48848eb", 
+                    "PrivateIpAddresses": [
+                        {
+                            "PrivateDnsName": "ip-172-31-20-106.us-west-2.compute.internal", 
+                            "Primary": true, 
+                            "PrivateIpAddress": "172.31.20.106"
+                        }
+                    ], 
+                    "PrivateDnsName": "ip-172-31-20-106.us-west-2.compute.internal", 
+                    "Attachment": {
+                        "Status": "attaching", 
+                        "DeviceIndex": 0, 
+                        "DeleteOnTermination": true, 
+                        "AttachmentId": "eni-attach-9d13a73c", 
+                        "AttachTime": "2016-07-27T21:56:15.000Z"
+                    }, 
+                    "Groups": [
+                        {
+                            "GroupName": "ssh-security-group", 
+                            "GroupId": "sg-49fe1326"
+                        }
+                    ], 
+                    "SubnetId": "subnet-28f3c540", 
+                    "OwnerId": "008583606530", 
+                    "PrivateIpAddress": "172.31.20.106"
+                }
+            ], 
+            "SourceDestCheck": true, 
+            "Placement": {
+                "Tenancy": "default", 
+                "GroupName": "", 
+                "AvailabilityZone": "us-west-2a"
+            }, 
+            "Hypervisor": "xen", 
+            "BlockDeviceMappings": [], 
+            "Architecture": "x86_64", 
+            "StateReason": {
+                "Message": "pending", 
+                "Code": "pending"
+            }, 
+            "IamInstanceProfile": {
+                "Id": "AIPAJYOOPEFOWDTRWP7XG", 
+                "Arn": "arn:aws:iam::008583606530:instance-profile/wide-open"
+            }, 
+            "RootDeviceName": "/dev/sda1", 
+            "VirtualizationType": "hvm", 
+            "AmiLaunchIndex": 0
+        }
+    ]
+}
+
