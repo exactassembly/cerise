@@ -6,7 +6,7 @@
 . conf/ec2-init.conf
 
 # verify ec2-init.conf
-if [ ! "$GIT_TOKEN" ] || [ ! "$MASTER_ADDRESS" ] || [ ! "SLAVE_PASS"]; then
+if [ ! "$GIT_TOKEN" ] || [ ! "$MASTER_ADDRESS" ] || [ ! "SLAVE_PASS" ]; then
     echo "Missing variable(s) in conf/ec2.init.conf."
     exit 1
 fi 
