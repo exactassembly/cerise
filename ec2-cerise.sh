@@ -9,10 +9,21 @@
 
 cp ec2-init/master-ec2-init ./master-ec2-init-tmp
 
-sed -i "s/GIT_TOKEN = \"\"/GIT_TOKEN = \"$GIT_TOKEN\"/" master-ec2-init-tmp
-sed -i "s/SLAVE_PASS = \"\"/SLAVE_PASS = \"$SLAVE_PASS\"/" master-ec2-init-tmp  
- 
+sed -i "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/" master-ec2-init-tmp
+sed -i "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" master-ec2-init-tmp  
 
-aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR --security-groups ssh-security-group --iam-instance-profile Name=wide-open --user-data master-ec2-init-tmp
+# pass aws ec2 run-instances JSON stdout to python for "InstanceId" parsing
+awsInstanceID=$(python -c 'import json, sys; print json.load(sys.stdin)["Instances"][0]["InstanceId"]' <<< \
+$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR \
+--security-groups ssh-security-group --iam-instance-profile Name=wide-open --user-data master-ec2-init-tmp))
+
+# output of run-instances apparently comes a fraction of a second before an IP address is assigned
+# such a usability
+awsPublicAddress=$(python -c 'import json, sys; print json.load(sys.stdin)["Instances"][0]["PublicIpAddress"]' <<< \
+$(aws ec2 describe-instances --instance-id $awsInstanceID))
 
 rm master-ec2-init-tmp 
+
+# begin spinup of slave with master IP address in-hand
+
+cp ec2-init/slave-ec2-init ./slave-ec2-init-tmp

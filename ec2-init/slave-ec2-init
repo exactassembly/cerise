@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo 'export GIT_TOKEN=""' >> /etc/aws-init.conf
+echo 'export MASTER_ADDRESS=""' >> /etc/aws-init.conf
+echo 'export SLAVE_PASS=""' >> /etc/aws-init.conf
+
 exec > ~/aws-init.log 2>&1
 
 echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" >> /etc/apt/sources.list.d/docker.list
