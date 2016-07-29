@@ -17,7 +17,7 @@ aws sts get-caller-identity --output table
 
 if [ $? != 0 ]; then
     exit 1
-elif
+else
     echo "Valid awscli configuration found!"
 fi
 
