@@ -12,9 +12,6 @@ apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E8
 apt-get update
 apt-get install -y python python-dev python-pip docker-engine git
 
-echo "Slave initialization complete."
-echo
-
 \curl -sSL https://get.rvm.io | bash -s stable --ruby
 source /usr/local/rvm/scripts/rvm
 gem install bundler
