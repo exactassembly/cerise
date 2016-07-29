@@ -37,3 +37,6 @@ mkdir /build
 cd /build
 
 buildslave create-slave slave $MASTER_ADDRESS:9989 build-slave $SLAVE_PASS
+
+echo "Slave initialization complete."
+echo

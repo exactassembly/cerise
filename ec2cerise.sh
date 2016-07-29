@@ -34,8 +34,10 @@ MASTER_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.mic
 # output of run-instances apparently comes a fraction of a second before an IP address is assigned
 # such a usability
 MASTER_ADDRESS=$(aws ec2 describe-instances --instance-id $MASTER_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+echo
 echo "Master instance ID =" $MASTER_ID
 echo "Master IP address = " $MASTER_ADDRESS
+echo
 
 rm master-ec2-init-tmp 
 
@@ -53,15 +55,19 @@ if [ "$SLAVE_EXISTS" = "None" ]; then
     echo "No existing AMI. Spinning up dummy slave instance..."
     SLAVE_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR \
     --security-groups ssh-security-group --user-data slave-ec2-init-tmp --query 'Instances[0].InstanceId' --output text)
-
+    SLAVE_ADDRESS=$(aws ec2 describe-instances --instance-id $SLAVE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+    echo
+    echo "Slave instance ID =" $SLAVE_ID
+    echo "Slave IP address = " $SLAVE_ADDRESS
+    echo
     echo "Waiting for slave init to complete..."
-    aws ec2 wait instance-status-ok --instance-ids $SLAVE_ID
+    ssh ubuntu@$SLAVE_ADDRESS tail -f ~/aws-init.log | sed '/Slave initialization complete./ q'
     echo "Commiting slave instance to image..." 
-    aws ec2 create-image --instance-id $SLAVE_ID --name="SLAVE_AMI"
+    aws ec2 create-image --instance-id $SLAVE_ID --name="SLAVE_AMI" --output text
     echo "Waiting for image (this will take time)..."
     aws ec2 wait image-available --filters "Name=owner-id,Values=$(aws sts get-caller-identity --query Account --output text)" "Name=name,Values=SLAVE_AMI"
     echo "Terminating dummy slave..."
-    aws ec2 terminate-instances --instance-ids $SLAVE_ID
+    aws ec2 terminate-instances --instance-ids $SLAVE_ID --output text
 else
     echo "Slave image already exists.  Omitting slave spinup."
 fi
