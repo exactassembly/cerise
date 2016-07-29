@@ -4,6 +4,8 @@ echo 'export GIT_TOKEN=""' >> /etc/aws-init.conf
 echo 'export MASTER_ADDRESS=""' >> /etc/aws-init.conf
 echo 'export SLAVE_PASS=""' >> /etc/aws-init.conf
 
+exec > /home/ubuntu/aws-init.log 2>&1
+
 echo "deb https://apt.dockerproject.org/repo ubuntu-trusty main" >> /etc/apt/sources.list.d/docker.list
 gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
