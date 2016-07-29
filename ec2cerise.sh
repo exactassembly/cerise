@@ -45,7 +45,7 @@ echo "Checking for existing slave AMI..."
 SLAVE_EXISTS=$(aws ec2 describe-images --filters "Name=owner-id,Values=$(aws sts get-caller-identity --query Account --output text)" "Name=name,Values=SLAVE_AMI" --query Images[0].ImageId --output text)
 
 # begin spinup of slave with master IP address in-hand
-if [ "$SLAVE_EXISTS" = "None" ]; then 
+#if [ "$SLAVE_EXISTS" = "None" ]; then 
     cp ec2-init/slave-ec2-init ./slave-ec2-init-tmp
 
     sed -i "" -e "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/" slave-ec2-init-tmp
@@ -72,8 +72,8 @@ if [ "$SLAVE_EXISTS" = "None" ]; then
     aws ec2 wait image-available --filters "Name=owner-id,Values=$(aws sts get-caller-identity --query Account --output text)" "Name=name,Values=SLAVE_AMI"
     echo "Terminating dummy slave..."
     aws ec2 terminate-instances --instance-ids $SLAVE_ID --output text
-else
-    echo "Slave image already exists.  Omitting slave spinup."
-fi
+#else
+#    echo "Slave image already exists.  Omitting slave spinup."
+#fi
 
 echo "All tasks complete."
