@@ -17,6 +17,3 @@ echo ". /etc/aws-init.conf" >> /home/ubuntu/.bashrc
 cd /build
 buildbot create-master master
 buildbot start master
-
-# --- SLAVE SPINUP ---
-# --- ADD ENVVARS TO SLAVE ---
