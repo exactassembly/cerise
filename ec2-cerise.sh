@@ -23,8 +23,8 @@ fi
 
 cp ec2-init/master-ec2-init ./master-ec2-init-tmp
 
-sed -i "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/" master-ec2-init-tmp
-sed -i "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" master-ec2-init-tmp  
+sed -i "" -e "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/"master-ec2-init-tmp
+sed -i "" -e "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" master-ec2-init-tmp  
 
 # spin up master instance, querying for InstanceId and assigning to variable "MASTER_ID"
 echo "Spinning up master instance..."
@@ -45,9 +45,9 @@ SLAVE_EXISTS=$(aws ec2 describe-images --filters "Name=owner-id,Values=$(aws sts
 if [ "$SLAVE_EXISTS" = "None" ]; then 
     cp ec2-init/slave-ec2-init ./slave-ec2-init-tmp
 
-    sed -i "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/" slave-ec2-init-tmp
-    sed -i "s/MASTER_ADDRESS=\"\"/MASTER_ADDRESS=\"$MASTER_ADDRESS\"/" slave-ec2-init-tmp
-    sed -i "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" slave-ec2-init-tmp
+    sed -i "" -e "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/" slave-ec2-init-tmp
+    sed -i "" -e "s/MASTER_ADDRESS=\"\"/MASTER_ADDRESS=\"$MASTER_ADDRESS\"/" slave-ec2-init-tmp
+    sed -i "" -e "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" slave-ec2-init-tmp
 
     echo "No existing AMI. Spinning up dummy slave instance..."
     SLAVE_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR \
