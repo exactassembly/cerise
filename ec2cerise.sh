@@ -64,7 +64,11 @@ SLAVE_EXISTS=$(aws ec2 describe-images --filters "Name=owner-id,Values=$(aws sts
     aws ec2 wait instance-running --instance-ids $SLAVE_ID  
     sleep 15
     echo "Tailing log file..."
-    ssh -o "StrictHostKeyChecking no" ubuntu@$SLAVE_ADDRESS "grep -q 'Slave initialization complete.' <(tail -f /home/ubuntu/aws-init.log) && exit"
+    ssh -o "StrictHostKeyChecking no" ubuntu@$SLAVE_ADDRESS "tail -f /home/ubuntu/aws-init.log" | while read line [ $line != 'Slave initialization complete.' ]
+    do
+        echo $line
+    done
+    
     echo "Commiting slave instance to image..." 
     aws ec2 create-image --instance-id $SLAVE_ID --name="SLAVE_AMI" --output text
     rm slave-ec2-init-tmp
