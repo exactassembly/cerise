@@ -8,14 +8,14 @@
 . conf/ec2-init.conf
 
 # verify ec2-init.conf
-if [ ! "$GIT_TOKEN" ] || [ ! "$MASTER_ADDRESS" ] || [ ! "SLAVE_PASS" ]; then
+if [ ! "$GIT_TOKEN" ] || [ ! "SLAVE_PASS" ]; then
     echo "Missing variable(s) in conf/ec2.init.conf."
     exit 1
 fi 
 
 aws sts get-caller-identity --output table
 
-if [ $? != 0 ]
+if [ $? != 0 ]; then
     exit 1
 elif
     echo "Valid awscli configuration found!"
