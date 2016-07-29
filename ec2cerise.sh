@@ -56,18 +56,18 @@ SLAVE_EXISTS=$(aws ec2 describe-images --filters "Name=owner-id,Values=$(aws sts
     SLAVE_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR \
     --security-groups ssh-security-group --user-data file://slave-ec2-init-tmp --query 'Instances[0].InstanceId' --output text)
     SLAVE_ADDRESS=$(aws ec2 describe-instances --instance-id $SLAVE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
-    rm slave-ec2-init-tmp
     echo
     echo "Slave instance ID =" $SLAVE_ID
     echo "Slave IP address = " $SLAVE_ADDRESS
     echo
     echo "Waiting for instance up..."
-    aws ec2 wait instance-running --instance-ids $SLAVE_ID
+    aws ec2 wait instance-running --instance-ids $SLAVE_ID  
     sleep 10
     echo "Tailing log file..."
     grep -q 'Slave initialization complete.' <(ssh -o "StrictHostKeyChecking no" ubuntu@$SLAVE_ADDRESS "tail -f /home/ubuntu/aws-init.log" | tee /dev/tty)
     echo "Commiting slave instance to image..." 
     aws ec2 create-image --instance-id $SLAVE_ID --name="SLAVE_AMI" --output text
+    rm slave-ec2-init-tmp
     echo "Waiting for image (this will take time)..."
     aws ec2 wait image-available --filters "Name=owner-id,Values=$(aws sts get-caller-identity --query Account --output text)" "Name=name,Values=SLAVE_AMI"
     echo "Terminating dummy slave..."
