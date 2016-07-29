@@ -33,7 +33,7 @@ MASTER_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.mic
 
 # output of run-instances apparently comes a fraction of a second before an IP address is assigned
 # such a usability
-aws ec2 wait instance-running --instance-ids $MASTER_ID
+sleep 2
 MASTER_ADDRESS=$(aws ec2 describe-instances --instance-id $MASTER_ID --query 'Instances[0].PublicIpAddress' --output text)
 echo "Master IP address = " $MASTER_ADDRESS
 
