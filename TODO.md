@@ -11,3 +11,9 @@
 * look into adding keypair, security group, and IAM role automation
 
 * figure out what requires manual configuration in conf file
+
+---
+
+shiny things:
+
+* add git remote address to parent project conf
