@@ -63,7 +63,7 @@ SLAVE_EXISTS=$(aws ec2 describe-images --filters "Name=owner-id,Values=$(aws sts
     echo "Waiting for instance up..."
     aws ec2 wait instance-running --instance-ids $SLAVE_ID  
     
-    until ssh -o "StrictHostKeyChecking no" ubuntu@$SLAVE_ADDRESS "ls /home/ubuntu/aws-init.log"
+    until ssh -o "StrictHostKeyChecking no" ubuntu@$SLAVE_ADDRESS "ls /home/ubuntu/aws-init.log"; do
         sleep 2
     done 
     echo "Tailing log file..."
