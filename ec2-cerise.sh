@@ -23,7 +23,7 @@ fi
 
 cp ec2-init/master-ec2-init ./master-ec2-init-tmp
 
-sed -i "" -e "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/"master-ec2-init-tmp
+sed -i "" -e "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/" master-ec2-init-tmp
 sed -i "" -e "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" master-ec2-init-tmp  
 
 # spin up master instance, querying for InstanceId and assigning to variable "MASTER_ID"
