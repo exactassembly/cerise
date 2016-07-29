@@ -8,7 +8,7 @@
 . conf/ec2-init.conf
 
 # verify ec2-init.conf
-if [ ! "$GIT_TOKEN" ] || [ ! "SLAVE_PASS" ]; then
+if [ ! "$GIT_TOKEN" ] || [ ! "SLAVE_PASS" ] || [ ! "AWS_KEYPAIR" ]; then
     echo "Missing variable(s) in conf/ec2.init.conf."
     exit 1
 fi 
