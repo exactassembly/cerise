@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # awscli must be installed and configured with user auth
 
 # "ssh-security-group" must be an existing security group that opens :22
