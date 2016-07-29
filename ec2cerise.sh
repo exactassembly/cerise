@@ -29,7 +29,7 @@ sed -i "" -e "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" master-ec2-init-tmp
 # spin up master instance, querying for InstanceId and assigning to variable "MASTER_ID"
 echo "Spinning up master instance..."
 MASTER_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR \
---security-groups ssh-security-group --iam-instance-profile Name=wide-open --user-data master-ec2-init-tmp --query 'Instances[0].InstanceId' --output text)
+--security-groups ssh-security-group --iam-instance-profile Name=wide-open --user-data file://master-ec2-init-tmp --query 'Instances[0].InstanceId' --output text)
 
 # output of run-instances apparently comes a fraction of a second before an IP address is assigned
 # such a usability
@@ -54,8 +54,9 @@ if [ "$SLAVE_EXISTS" = "None" ]; then
 
     echo "No existing AMI. Spinning up dummy slave instance..."
     SLAVE_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR \
-    --security-groups ssh-security-group --user-data slave-ec2-init-tmp --query 'Instances[0].InstanceId' --output text)
+    --security-groups ssh-security-group --user-data file://slave-ec2-init-tmp --query 'Instances[0].InstanceId' --output text)
     SLAVE_ADDRESS=$(aws ec2 describe-instances --instance-id $SLAVE_ID --query 'Reservations[0].Instances[0].PublicIpAddress' --output text)
+    rm slave-ec2-init-tmp
     echo
     echo "Slave instance ID =" $SLAVE_ID
     echo "Slave IP address = " $SLAVE_ADDRESS
