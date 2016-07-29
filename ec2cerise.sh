@@ -61,7 +61,8 @@ if [ "$SLAVE_EXISTS" = "None" ]; then
     echo "Slave IP address = " $SLAVE_ADDRESS
     echo
     echo "Waiting for slave init to complete..."
-    ssh -o "StrictHostKeyChecking no" ubuntu@$SLAVE_ADDRESS tail -f /home/ubuntu/aws-init.log | sed '/Slave initialization complete./ q'
+    aws ec2 wait instance-running --instance-ids $SLAVE_ID
+    ssh -o "StrictHostKeyChecking no" ubuntu@$SLAVE_ADDRESS "tail -f /home/ubuntu/aws-init.log | sed '/Slave initialization complete./ q'"
     echo "Commiting slave instance to image..." 
     aws ec2 create-image --instance-id $SLAVE_ID --name="SLAVE_AMI" --output text
     echo "Waiting for image (this will take time)..."
