@@ -1,2 +1,13 @@
-* experiment with SCP on-up 
-* remove hard-coded env from master.cfg factory
+* buildbot agnosticism
+    * instance size
+    * git repo
+    * factory steps
+    * web branding
+    
+    ideally streamed down from parent git project on client machine
+
+* more commentary on ec2cerise
+
+* look into adding keypair, security group, and IAM role automation
+
+* figure out what requires manual configuration in conf file
