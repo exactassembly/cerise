@@ -28,8 +28,8 @@ if [ ! "$AWS_KEYPAIR" ]; then
         KP_ARRAY=($(ls *.pem))
         AWS_KEYPAIR=${KP_ARRAY[0]}
         echo "Using" $AWS_KEYPAIR
-    else
-        echo "Generating keypair..."    # else generate keypair with random name
+    else    # else generate keypair with random name
+        echo "Generating keypair..."
         KP_RANDOM=$RANDOM
         aws ec2 create-key-pair --key-name cerise --query "KeyMaterial" --output text > $KP_RANDOM".pem"
         AWS_KEYPAIR=$KP_RANDOM".pem"
