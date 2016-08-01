@@ -24,8 +24,8 @@ fi
 # check for keypair from conf file
 if [ ! "$AWS_KEYPAIR" ]; then
     echo "No keypair referenced in configuration file."
-    if [ "$(ls *.pem)" ]; then  # check for keypair in current directory
-        KP_ARRAY=($(ls *.pem))
+    if ls *.pem; then  # check for keypair in current directory
+        KP_ARRAY=$(ls *.pem)
         AWS_KEYPAIR=${KP_ARRAY[0]}
         echo "Using" $AWS_KEYPAIR
     else    # else generate keypair with random name
