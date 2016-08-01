@@ -5,7 +5,9 @@
 # "ssh-security-group" must be an existing security group that opens :22
 # "wide-open" must be an existing IAM role that allows ec2-run-instances
 
-. conf/ec2-init.conf
+GIT_REPO=$1
+GIT_TOKEN=$2
+AWS_KEYPAIR=$3
 
 # verify ec2-init.conf
 if [ ! "$GIT_TOKEN" ] || [ ! "SLAVE_PASS" ]; then
