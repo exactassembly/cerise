@@ -7,7 +7,6 @@
 
 GIT_REPO=$1
 GIT_TOKEN=$2
-AWS_KEYPAIR=$3
 
 # verify ec2-init.conf
 if [ ! "$GIT_TOKEN" ] || [ ! "SLAVE_PASS" ]; then

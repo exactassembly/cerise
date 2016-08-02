@@ -1,6 +1,10 @@
 from flask import Flask
+from urllib.parse import urlparse
 import boto3
 app = Flask(__name__)
+
+AWS_ACCESS_ID=""
+AWS_ACCESS_KEY=""
 
 @app.route('/')
 def index():
@@ -8,6 +12,11 @@ def index():
 
 @app.route('/spinup', methods=['POST'])
 def spinup():
-    GIT_REPO = request.form['repo']
-    GIT_TOKEN = request.form['token']
+    parse = urlparse(request.form['repo'])
+    if parse['scheme'] and parse.['netloc']:
+        GIT_REPO = request.form['repo']
+    if len(request.form['token'].split()) == 1 and request.form['token'].isalnum():
+        GIT_TOKEN = request.form['token']
+ 
+
 
