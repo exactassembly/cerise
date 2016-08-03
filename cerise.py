@@ -17,6 +17,6 @@ def spinup():
         GIT_REPO = request.form['repo']
     if len(request.form['token'].split()) == 1 and request.form['token'].isalnum():
         GIT_TOKEN = request.form['token']
- 
+    if 
 
 

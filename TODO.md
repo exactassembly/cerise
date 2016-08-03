@@ -1,19 +1,18 @@
-* buildbot agnosticism
-    * instance size
-    * git repo
-    * factory steps
-    * web branding
-    
-    ideally streamed down from parent git project on client machine
+* user subscription
+    * mongodb
+        * account
+            * builder ids
+            * factories
+    * create session ID (flask login?)
+    * interface for adding builders
 
-* more commentary on ec2cerise
+* populatematrix()
 
-* look into adding keypair, security group, and IAM role automation
+* buildlightupdate()
+    * ajax
+        * session id 
+        * ???
+    * server side
+        * query all builders under user's master 
+    * respond with states
 
-* figure out what requires manual configuration in conf file
-
----
-
-shiny things:
-
-* add git remote address to parent project conf
