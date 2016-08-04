@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for
+from flask.ext.login import login_user, logout_user, login_required
+from flask.ext.wtf import 
 from flask.ext.mongoengine import MongoEngine
-from flask.ext.security import Security, MongoEngineUserDatastore, UserMixin, \
-    RoleMixin, login_required    
+from werkzeug.security import check_password_hash
 from urllib.parse import urlparse
 import boto3
 app = Flask(__name__)
@@ -14,13 +15,33 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
 
-user_datastore = MongoEngineUserDatastore(db, User)
-security = Security(app, user_datastore)
-
+@login_manager.user_loader
+def load_user(user_id):
+    user = db.users.find_one({"user_id": user_id})
+    if not user:
+        return None
+    return User(user["user_id"])
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if current_user.is_authenticated:
+        return render_template('index.html')
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        user = User.objects.get(user_id=form.username.data)
+        if user and check_password_hash(user.password, form.password.data):
+            user.authenticated = True
+            login_user(user_obj)
+            return redirect(url_for('/'))
+            
+
+    return render_template('login.html', title='login', form=form)
+            
 
 @app.route('/spinup', methods=['POST'])
 @login_required
