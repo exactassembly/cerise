@@ -1,7 +1,7 @@
 from flask import Flask, render_template, redirect, url_for
 from flask.ext.login import login_user, logout_user, login_required
-from flask.ext.wtf import 
 from flask.ext.mongoengine import MongoEngine
+from wtforms import Form, StringField, PasswordField, validators, FieldList
 from werkzeug.security import generate_password_hash, check_password_hash
 from urllib.parse import urlparse
 import boto3
@@ -18,6 +18,25 @@ class User(db.Document, UserMixin):
 class Project(db.Document):
     gitrepo = db.URLField(max_length=255)
     steps = db.ListField(db.StringField(max_length=255))
+
+class LoginForm(Form):
+    email = StringField('email', [validators.DataRequired()])
+    password = PasswordField('password', [validators.DataRequired()])
+
+class RegisterForm(Form):
+    email = StringField('email', [
+        validators.Length(min=4, max=25, message='length must be > 4 and < 25')])
+    password = PasswordField('password', [
+        validators.Length(min=6, max=25, message='length must be > 6 and < 25'), 
+        validators.EqualTo('confirm', message='passwords must match')])
+    confirm = PasswordField('retype password')
+
+class ProjectForm(Form):
+    gitrepo = StringField('git repo', [
+        validators.Length(max=255, message='length must be shorter than 255 characters')])
+    steps = FieldList(StringField('build step', [
+        validators.Length(max=255, message='length must be shorter than 255 characters')
+    ]), min_entries=1, max_entries=5)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -46,11 +65,14 @@ def login():
 
 @app.route('/register', methods=['POST'])
 def register():
+    form = RegisterForm()
     if form.validate_on_submit():
         user = User(email=form.email.data)
         user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
         user.save()
         login_user(user)
+        return redirect(url_for('/'))
+    return render_template('/register', form=form)
 
 @app.route('/spinup', methods=['POST'])
 @login_required
