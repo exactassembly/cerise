@@ -16,13 +16,12 @@ fi
 
 aws sts get-caller-identity --output table  # simple check for aws configuration
 
-if [ $? != 0 ]; then    # exit on non-zero exit status
+if [ $? != 0 ]; then 
     exit 1
 else
     echo "Valid awscli configuration found!"
 fi
 
-# check for keypair from conf file
 if [ ! "$AWS_KEYPAIR" ]; then
     echo "No keypair referenced in configuration file."
     if ls *.pem; then  # check for keypair in current directory
@@ -43,7 +42,6 @@ cp ec2-init/master-ec2-init ./master-ec2-init-tmp   # move barebones init to tmp
 sed -i "" -e "s/GIT_TOKEN=\"\"/GIT_TOKEN=\"$GIT_TOKEN\"/" master-ec2-init-tmp
 sed -i "" -e "s/SLAVE_PASS=\"\"/SLAVE_PASS=\"$SLAVE_PASS\"/" master-ec2-init-tmp  
 
-# spin up master instance, querying for InstanceId and assigning to variable "MASTER_ID"
 echo "Spinning up master instance..."
 MASTER_ID=$(aws ec2 run-instances --image-id ami-d732f0b7 --instance-type t2.micro --key-name $AWS_KEYPAIR \
 --security-groups ssh-security-group --iam-instance-profile Name=wide-open --user-data file://master-ec2-init-tmp --query 'Instances[0].InstanceId' --output text)

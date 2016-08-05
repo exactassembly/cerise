@@ -1,4 +1,5 @@
 * ### user model + werkzeug check_password()
+* ### exception handling
 
 * user subscription
     * mongodb
