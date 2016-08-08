@@ -3,19 +3,22 @@ from flask.ext.login import login_user, logout_user, login_required
 from flask.ext.mongoengine import MongoEngine
 from wtforms import Form, StringField, PasswordField, validators, FieldList
 from werkzeug.security import generate_password_hash, check_password_hash
-from urllib.parse import urlparse
+import urlparse
 import boto3
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
 
 db = MongoEngine(app)
+ec2 = boto3.resource('ec2')
 
 class User(db.Document, UserMixin):
     email = db.StringField(max_length=255)
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
+    projects = ListField(EmbeddedDocumentField(Project))
 
-class Project(db.Document):
+class Project(db.EmbeddedDocument):
+    name = db.StringField(max_length=255)
     gitrepo = db.URLField(max_length=255)
     steps = db.ListField(db.StringField(max_length=255))
 
@@ -55,6 +58,8 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     if request.method == 'POST' and form.validate_on_submit():
         user = User.objects.get(user_id=form.email.data)
         if user and check_password_hash(user.password, form.password.data):
@@ -71,12 +76,12 @@ def register():
         user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
         user.save()
         login_user(user)
-        return redirect(url_for('/'))
+        return redirect(url_for('index'))
     return render_template('/register', form=form)
 
-@app.route('/spinup', methods=['POST'])
-@login_required
-def spinup():
+#@app.route('/build', methods=['POST'])
+#@login_required
+#def build():
     
 
 @app.route('/account')

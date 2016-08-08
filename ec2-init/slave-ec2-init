@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo 'export GIT_TOKEN=""' >> /etc/aws-init.conf
 echo 'export MASTER_ADDRESS=""' >> /etc/aws-init.conf
 echo 'export SLAVE_PASS=""' >> /etc/aws-init.conf
 
