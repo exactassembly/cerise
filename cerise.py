@@ -16,6 +16,7 @@ class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
     email = db.StringField(max_length=255)
     password = db.StringField(max_length=255)
+    port_offset = db.IntField()
     active = db.BooleanField(default=True)
     projects = ListField(EmbeddedDocumentField(Project))
 
@@ -92,6 +93,7 @@ def register():
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
+        user.port_offset = randint(1, 2000)
         user.save()
         login_user(user)
         create_master(user)
