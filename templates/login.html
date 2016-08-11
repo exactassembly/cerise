@@ -17,6 +17,7 @@
         <div>{{ rForm.username.label }}: {{ rForm.username }}</div>
         <div>{{ rForm.password.label }}: {{ rForm.password }}</div>
         <div>{{ rForm.confirm.label }}: {{ rForm.confirm }}</div>
+        {{ rForm.csrf_token }}
         <input type="submit" value="submit">
     </form>
 </div>
