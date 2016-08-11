@@ -44,7 +44,7 @@ def login():
     form = RegisterForm()
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST' and form():
         user = User.objects.get(username=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
             user.authenticated = True
