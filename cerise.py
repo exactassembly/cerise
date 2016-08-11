@@ -6,6 +6,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os, boto3, subprocess, requests
 from configparser import ConfigParser
 from urllib.parse import urlparse
+from random import randint
+
 
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
