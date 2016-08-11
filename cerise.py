@@ -55,7 +55,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
+    if form.validate():
         user = User(username=form.username.data, email=form.email.data)
         user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
         user.port_offset = randint(1, 2000)
