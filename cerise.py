@@ -18,11 +18,12 @@ ec2 = boto3.resource('ec2')
 
 def create_master(user):
     directory = "/build/" + user.username
-    os.mkdir(directory)
+    if not os.path.exists(directory):
+        os.mkdir(directory)
     c = ConfigParser()
     c.read('./conf/default.conf')
     c.set('main', 'user', user.username)
-    with open('/build/' + user.username + '.conf') as f:
+    with open('/build/' + user.username + '.conf', 'w') as f:
         c.write(f)
     subprocess.call(['ln', '-s', './conf/caiman.cfg', 'directory' + '/master.cfg'])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
@@ -30,7 +31,7 @@ def create_master(user):
 
 @login_manager.user_loader
 def load_user(id):
-    user = User.objects.get(username=id)
+    user = User.objects.get(id=id)
     if not user:
         return None
     return user
@@ -58,14 +59,15 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
-        user.port_offset = randint(1, 2000)
-        user.save()
-        login_user(user)
-        create_master(user)
-        return redirect(url_for('index'))
+    if not User.objects.get(username=form.username.data):
+        if form.validate_on_submit():
+            user = User(username=form.username.data, email=form.email.data)
+            user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
+            user.port_offset = randint(1, 2000)
+            user.save()
+            login_user(user)
+            create_master(user)
+            return redirect(url_for('index'))
 
 @app.route('/account')
 @login_required
@@ -78,6 +80,12 @@ def update():
     port = sum([curent_user.port_offset, 20000])
     r = requests.get('localhost:' + port + "/builds")
     return(r.json())
+
+@app.route('/logout', methods=['POST'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 if __name__ == "__main__":
     for user in User.objects:
