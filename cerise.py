@@ -1,5 +1,5 @@
-from flask import Flask, render_template, redirect, url_for
-from flask_login import login_user, logout_user, login_required, LoginManager
+from flask import Flask, request, render_template, redirect, url_for
+from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
 from models import *
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -34,9 +34,10 @@ def load_user(id):
     return user
 
 @app.route('/')
-@login_required
 def index():
-    return render_template('index.html', user=current_user)
+    if current_user.is_authenticated:
+	    return render_template('index.html', user=current_user)
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -81,4 +82,4 @@ if __name__ == "__main__":
     for user in User.objects:
         directory = "/build/" + user.username
         subprocess.Popen(['buildbot', 'start'], cwd=directory)
-    app.run()
+    app.run(host='0.0.0.0')
