@@ -45,7 +45,7 @@ def login():
     rForm = RegisterForm()
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    if request.method == 'POST' and form.validate():
+    if request.method == 'POST' and form.validate_on_submit():
         user = User.objects.get(username=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
             user.authenticated = True
@@ -56,7 +56,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
-    if form.validate():
+    if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
         user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
         user.port_offset = randint(1, 2000)

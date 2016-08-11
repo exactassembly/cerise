@@ -1,6 +1,7 @@
 from cerise import db
 from flask_login import UserMixin
-from wtforms import Form, StringField, PasswordField, validators, FieldList
+from flask_wtf import Form
+from wtforms import StringField, PasswordField, validators, FieldList
 
 class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
