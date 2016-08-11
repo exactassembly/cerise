@@ -51,7 +51,7 @@ def login():
             user.authenticated = True
             login_user(user)
             return redirect(url_for('index'))
-    return render_template('login.html', title='login', form=form)
+    return render_template('login.html', title='login', form=form, rForm=rForm)
 
 @app.route('/register', methods=['POST'])
 def register():
