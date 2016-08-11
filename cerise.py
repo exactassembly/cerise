@@ -63,8 +63,6 @@ def register():
         login_user(user)
         create_master(user)
         return redirect(url_for('index'))
-    return render_template('/register', form=form)
-
 
 @app.route('/account')
 @login_required
