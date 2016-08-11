@@ -15,6 +15,10 @@ class User(db.Document, UserMixin):
     active = db.BooleanField(default=True)
     projects = db.ListField(db.EmbeddedDocumentField(Project))
 
+class LoginForm(Form):
+    username = StringField('email', [validators.DataRequired()])
+    password = PasswordField('password', [validators.DataRequired()])
+
 class RegisterForm(Form):
     username = StringField('username', [
         validators.Length(min=4, max=25, message='length must be > 6 and < 25')
