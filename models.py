@@ -16,7 +16,7 @@ class User(db.Document, UserMixin):
     projects = db.ListField(db.EmbeddedDocumentField(Project))
 
 class LoginForm(Form):
-    email = StringField('email', [validators.DataRequired()])
+    username = StringField('username', [validators.DataRequired()])
     password = PasswordField('password', [validators.DataRequired()])
 
 class RegisterForm(Form):
