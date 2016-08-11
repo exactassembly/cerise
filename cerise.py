@@ -1,13 +1,15 @@
 from flask import Flask, render_template, redirect, url_for
-from flask.ext.login import login_user, logout_user, login_required, LoginManager
-from .models import *
-from wtforms import Form, StringField, PasswordField, validators, FieldList
+from flask_login import login_user, logout_user, login_required, LoginManager
+from flask_mongoengine import MongoEngine
+from models import *
 from werkzeug.security import generate_password_hash, check_password_hash
-import os, boto3, urlparse, subprocess, requests
-from ConfigParser import SafeConfigParser
+import os, boto3, subprocess, requests
+from configparser import ConfigParser
+from urllib.parse import urlparse
 
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
+db = MongoEngine(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 ec2 = boto3.resource('ec2')
@@ -15,14 +17,14 @@ ec2 = boto3.resource('ec2')
 def create_master(user):
     directory = "/build/" + user.username
     os.mkdir(directory)
-    c = SafeConfigParser()
+    c = ConfigParser()
     c.read('./conf/default.conf')
     c.set('main', 'user', user.username)
     with open('/build/' + user.username + '.conf') as f:
         c.write(f)
     subprocess.call(['ln', '-s', './conf/caiman.cfg', 'directory' + '/master.cfg'])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
-    subprocess.Popen(['buildbot', 'start'], cwd=directory))
+    subprocess.Popen(['buildbot', 'start'], cwd=directory)
 
 @login_manager.user_loader
 def load_user(id):

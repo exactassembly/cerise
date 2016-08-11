@@ -1,6 +1,11 @@
-from flask.ext.mongoengine import MongoEngine
+from cerise import db
+from flask_login import UserMixin
+from wtforms import Form, StringField, PasswordField, validators, FieldList
 
-db = MongoEngine(app)
+class Project(db.EmbeddedDocument):
+    name = db.StringField(max_length=255)
+    gitrepo = db.URLField(max_length=255)
+    steps = db.ListField(db.StringField(max_length=255))
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
@@ -8,21 +13,7 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)
     port_offset = db.IntField()
     active = db.BooleanField(default=True)
-    projects = ListField(EmbeddedDocumentField(Project))
-
-    def is_authenticated(self):
-        return True
-    def is_active(self):
-        return True
-    def is_anonymous(self):
-        return False
-    def get_id(self):
-        return unicode(self.username)
-
-class Project(db.EmbeddedDocument):
-    name = db.StringField(max_length=255)
-    gitrepo = db.URLField(max_length=255)
-    steps = db.ListField(db.StringField(max_length=255))
+    projects = db.ListField(db.EmbeddedDocumentField(Project))
 
 class LoginForm(Form):
     email = StringField('email', [validators.DataRequired()])
