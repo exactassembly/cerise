@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+<div id="projects">
+    {% for project in user.projects %}
+        <form action="/account" method="POST">
+            <div>{{ project.name }}</div>
+            <div>{{ form.gitrepo.label }}</div>
+            <div>{{ form.gitrepo }}</div>
+            <ul class="steps">
+            { % for step in project.steps %}
+                <li class="step">{% step %}</li>
+            {% endfor %}
+            </ul>
+        </form>
+    {% endfor %}
+    <button id="addProject" type="button">add project</button>
+</div>
+</body>
+<script>var user = '{{ user }}';</script>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+<script src="account.js" type="text/javascript"></script>
+</html>
