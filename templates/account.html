@@ -5,10 +5,10 @@
     {% for project in projects %}
         <form id="{{ project.name }}">
             <h3>{{ project.name }}</h3>
-            <div>{{ form.gitrepo.label }}: {{ project.gitrepo }}</div>
+            <div>{{ form.gitrepo.label }}: <input type="text" value="{{ project.gitrepo }}"></div>
             <ul class="steps">
             {% for step in project.steps %}
-                <li><input id="step{{ loop.index0 }}" type="text" value="{{ step }}"></li>
+                <li><input type="text" value="{{ step }}"></li>
             {% endfor %}
             </ul>
         </form>
