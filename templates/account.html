@@ -2,7 +2,7 @@
 <html>
 <body>
 <div id="projects">
-    {% for project in user.projects %}
+    {% for project in projects %}
         <form class="project">
             <div>{{ project.name }}</div>
             <div>{{ form.gitrepo.label }}</div>
