@@ -3,13 +3,13 @@
 <body>
 <div id="projects">
     {% for project in projects %}
-        <form class="project">
-            <div>{{ project.name }}</div>
+        <form id="{ project.name }">
+            <h3>{{ project.name }}</h3>
             <div>{{ form.gitrepo.label }}</div>
             <div>{{ form.gitrepo }}</div>
             <ul class="steps">
             {% for step in project.steps %}
-                <li class="step">{{ step }}</li>
+                <input id="step{ loop.index0 }" type="text" value="{ step }"></div>
             {% endfor %}
             </ul>
         </form>
