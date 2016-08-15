@@ -9,7 +9,7 @@
             <div>{{ form.gitrepo }}</div>
             <ul class="steps">
             {% for step in project.steps %}
-                <li class="step">{% step %}</li>
+                <li class="step">{{ step }}</li>
             {% endfor %}
             </ul>
         </form>
