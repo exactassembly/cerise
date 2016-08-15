@@ -3,7 +3,7 @@
 <body>
 <div id="projects">
     {% for project in user.projects %}
-        <form action="/account" method="POST">
+        <form class="project">
             <div>{{ project.name }}</div>
             <div>{{ form.gitrepo.label }}</div>
             <div>{{ form.gitrepo }}</div>
@@ -15,6 +15,12 @@
         </form>
     {% endfor %}
     <button id="addProject" type="button">add project</button>
+    <form id="newProject" style="display: none">
+        <input type="text" name="gitrepo">
+        <input type="text" name="step">
+        <button id="addStep" type="button">add step</button>
+        <button id="submit" type="submit">submit</button>
+    </form>
 </div>
 </body>
 <script>var user = '{{ user }}';</script>

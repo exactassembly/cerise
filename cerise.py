@@ -39,7 +39,7 @@ def load_user(id):
 @app.route('/')
 def index():
     if current_user.is_authenticated:
-	    return render_template('index.html', user=current_user)
+	    return render_template('index.html', user=current_user.username)
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -72,7 +72,8 @@ def register():
 @app.route('/account')
 @login_required
 def account():
-    return render_template('account.html')
+    form=ProjectForm
+    return render_template('account.html', form=form)
 
 @app.route('/update', methods=['GET'])
 @login_required
