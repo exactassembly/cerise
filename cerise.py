@@ -73,6 +73,7 @@ def register():
 @login_required
 def account():
     form = ProjectForm()
+    projects = []
     return render_template('account.html', form=form, projects=current_user['projects'])
 
 @app.route('/update', methods=['GET'])
