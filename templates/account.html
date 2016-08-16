@@ -8,7 +8,7 @@
             <div>{{ form.gitrepo.label }}: <input type="text" class="gitRepo" value="{{ project.gitrepo }}"></div>
             <ul class="steps">
             {% for step in project.steps %}
-                <li><input type="text" name="{{ }}"value="{{ step }}"></li>
+                <li><input type="text" name="{{ loop.index }}"value="{{ step }}"></li>
             {% endfor %}
             </ul>
         </form>
