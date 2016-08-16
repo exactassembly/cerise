@@ -74,7 +74,16 @@ def register():
 def account():
     form = ProjectForm()
     projects = current_user['projects']
+    if request.method == 'POST' and form.validate_on_submit():
+        current_user.projects
     return render_template('account.html', form=form, projects=projects)
+
+@app.route('/project')
+@login_required
+def project():
+    form = ProjectForm()
+    project = current_user.objects.get(name=request.args.get('name'))
+    return render_template('project.html', project=project, form=form)
 
 @app.route('/update', methods=['GET'])
 @login_required

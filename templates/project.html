@@ -1,0 +1,9 @@
+ <form id=project class="projectForm">
+    <h3>{{ project.name }}</h3>
+    <div>{{ form.gitrepo.label }}: {{ form.gitrepo(value=project.gitrepo) }}></div>
+    <ul class="steps">
+    {% for step in project.steps %}
+        <li>{{ form.steps(value=step) }}></li>
+    {% endfor %}
+    </ul>
+</form>

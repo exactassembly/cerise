@@ -1,3 +1,3 @@
 * exception handling
-* client side/ajax
-* rest - buildbot + flask
+
+* figure out WTFforms ids and packaging POST payload

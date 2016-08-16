@@ -33,8 +33,10 @@ class RegisterForm(Form):
     confirm = PasswordField('retype password')
 
 class ProjectForm(Form):
+    name = StringField('project name', [
+        validators.Length(max=255, message='length must be shorter than 255 characters')])
     gitrepo = StringField('git repo', [
         validators.Length(max=255, message='length must be shorter than 255 characters')])
     steps = FieldList(StringField('build step', [
         validators.Length(max=255, message='length must be shorter than 255 characters')
-    ]), min_entries=1, max_entries=5)
+    ]), min_entries=1, max_entries=15)
