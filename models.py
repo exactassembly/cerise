@@ -39,15 +39,19 @@ class RegisterForm(Form):
 
 class StepForm(wtForm):
     step = StringField('build step', [
-        validators.Length(max=255, message='length must be shorter than 255 characters')
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()
     ])
     workdir = StringField('workdir', [
-        validators.Length(max=255, message='length must be shorter than 255 characters')
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()
     ])
 
 class ProjectForm(Form):
     name = StringField('project name', [
-        validators.Length(max=255, message='length must be shorter than 255 characters')])
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()])
     gitrepo = StringField('git repo', [
-        validators.Length(max=255, message='length must be shorter than 255 characters')])
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()])
     steps = FieldList(FormField(StepForm), min_entries=1, max_entries=25)
