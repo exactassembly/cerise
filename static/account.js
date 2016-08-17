@@ -7,10 +7,11 @@ $( "#addStep" ).click(function(){
     var index = $( "#steps" ).children().length;
     stepID = "steps-" + index + "-step"
     workdirID = "steps-" + index + "-workdir"
-    $( "#steps" ).append("<div>");
-    $( "#steps" ).append('<input id="' + stepID + '" name="' + stepID + '" type="text"></input>');
-    $( "#steps" ).append('<input id="' + workdirID + '" name="' + workdirID + '" type="text"></input>'); 
-    $( "#steps" ).append("</div>");     
+    $( "#steps" ).append(
+    '<div>\
+        <input id="' + stepID + '" name="' + stepID + '" type="text"></input>\
+        <input id="' + workdirID + '" name="' + workdirID + '" type="text"></input>\
+    </div>')     
 })
 
 $( "#newProject" ).submit(function( event ){
