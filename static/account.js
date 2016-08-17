@@ -5,8 +5,12 @@ $( "#addProject" ).click(function(){
 
 $( "#addStep" ).click(function(){
     var index = $( "#steps" ).children().length;
-    index = index+1;
-    $( "#steps" ).append('<input id="steps-' + index + '" name="steps-' + index + ' type="text"></input>', index);
+    stepID = "steps-" + index + "step"
+    workdirID = "steps-" + index + "workdir"
+    $( "#steps" ).append("<div>");
+    $( "#steps" ).append('<input id="' + stepID + '" name="' + stepID + ' type="text"></input>');
+    $( "#steps" ).append('<input id="' + workdirID + '" name="' + workdirID + ' type="text"></input>'); 
+    $( "#steps" ).append("</div>");     
 })
 
 $( "#newProject" ).submit(function( event ){
