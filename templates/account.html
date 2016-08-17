@@ -20,6 +20,11 @@
         <button id="addStep" type="button">add step</button>
         <input type="submit">
     </form>
+        {% for field, errors in form.errors.items() %}
+            <div class="alert alert-error">
+            {{ form[field].label }}: {{ ', '.join(errors) }}
+            </div>
+        {% endfor %}
 </div>
 </body>
 <script>var user = '{{ user }}';</script>
