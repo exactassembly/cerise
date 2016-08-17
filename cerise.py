@@ -81,7 +81,7 @@ def account():
             newProject['gitrepo'] = form.gitrepo.data
             newProject['steps'] = []
             for step in form.steps.data:
-                newProject['steps'].append(Step(action=step.step, workdir=step.workdir))
+                newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
             current_user.projects.append(newProject)
             current_user.save()
         else:
