@@ -4,9 +4,9 @@ $( "#addProject" ).click(function(){
 });
 
 $( "#addStep" ).click(function(){
-    var index = $( "#steps" ).children().length
-    index = index+1
-    $( "#steps" ).append(format('<input id="steps-' + index + '" name="steps-' + index + ' type="text"></input>', index))
+    var index = $( "#steps" ).children().length;
+    index = index+1;
+    $( "#steps" ).append('<input id="steps-' + index + '" name="steps-' + index + ' type="text"></input>', index);
 })
 
 $( "#newProject" ).submit(function( event ){
