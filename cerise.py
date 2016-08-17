@@ -76,10 +76,9 @@ def account():
     projects = current_user['projects']
     if request.method == 'POST':
         if form.validate_on_submit():
-            newProject = {}
-            newProject['name'] = form.name.data
-            newProject['gitrepo'] = form.gitrepo.data
-            newProject['steps'] = []
+            newProject = Project(name=form.name.data)
+            newProject.gitrepo = form.gitrepo.data
+            newProject.steps = []
             for step in form.steps.data:
                 newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
             current_user.projects.append(newProject)
