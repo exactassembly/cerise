@@ -99,7 +99,8 @@ def account():
 @login_required
 def project():
     form = ProjectForm()
-    project = current_user.projects.get(name=request.args.get('name'))
+    currentProject = request.args.get('name')
+    project = current_user.projects.get(name=currentProject)
     if request.method == 'POST':
         if form.validate_on_submit():
             try:
@@ -109,6 +110,7 @@ def project():
                 for step in form.steps.data:
                     project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                 project.save()
+                return redirect('/project?name=' + request.form.get('projectName'))
             except:
                 flash("Error updating project.")
     return render_template('project.html', project=project, form=form)
