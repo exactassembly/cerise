@@ -69,7 +69,7 @@ def register():
             create_master(user)
             return redirect(url_for('index'))
 
-@app.route('/account')
+@app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
     form = ProjectForm()
