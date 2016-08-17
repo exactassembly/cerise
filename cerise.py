@@ -105,15 +105,14 @@ def project():
         return render_template('project.html', project=project, form=form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            try:
-                project = current_user.projects.get(name=request.form.get('projectName'))
-                project.gitrepo = form.gitrepo.data
-                project.steps = []
-                for step in form.steps.data:
-                    project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-                current_user.save()
-            except:
-                flash("Error updating project.")
+            project = current_user.projects.get(name=request.form.get('projectName'))
+            project.gitrepo = form.gitrepo.data
+            project.steps = []
+            for step in form.steps.data:
+                project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+            current_user.save()
+        else:
+            flash("error editing project.")
         return redirect('/project?name=' + request.form.get('projectName'))
     
 
