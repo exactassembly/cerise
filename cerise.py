@@ -112,9 +112,10 @@ def project():
                 for step in form.steps.data:
                     project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                 project.save()
-                return redirect('/project?name=' + request.form.get('projectName'))
             except:
                 flash("Error updating project.")
+        return redirect('/project?name=' + request.form.get('projectName'))
+    
 
 @app.route('/update', methods=['GET'])
 @login_required
