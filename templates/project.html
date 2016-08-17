@@ -1,9 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
  <form id=project class="projectForm">
     <h3>{{ project.name }}</h3>
-    <div>{{ form.gitrepo.label }}: {{ form.gitrepo(value=project.gitrepo) }}></div>
-    <ul class="steps">
+    <div>{{ form.gitrepo.label }}: {{ form.gitrepo(value=project.gitrepo) }}</div>
+    <div id="steps">
     {% for step in project.steps %}
-        <li>{{ form.steps(value=step) }}></li>
+        <div>
+            <input id="steps-{{ loop.index0 }}-step" name="steps-{{ loop.index0 }}-step" type="text" placeholder="action">
+            <input id="steps-{{ loop.index0 }}-workdir" name="steps-{{ loop.index0 }}-workdir" type="text" placeholder="workdir"></div>
+        </div>
     {% endfor %}
-    </ul>
+    <button id="addStep" type="button">add step</button>
+    <input type="submit">
 </form>
+<script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+<script src="/static/account.js" type="text/javascript"></script>
+</html>
+
