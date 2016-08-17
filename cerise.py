@@ -105,7 +105,7 @@ def project():
         return render_template('project.html', project=project, form=form)
     if request.method == 'POST':
         if form.validate_on_submit():
-            project = current_user.projects.get(name=request.form.get('projectName'))
+            project = current_user.projects.get(name=request.form.get('name'))
             project.gitrepo = form.gitrepo.data
             project.steps = []
             for step in form.steps.data:
@@ -118,7 +118,7 @@ def project():
                         getattr(form, field).label.text,
                         error
                     ))
-        return redirect('/project?name=' + request.form.get('projectName'))
+        return redirect('/project?name=' + request.form.get('name'))
     
 
 @app.route('/update', methods=['GET'])

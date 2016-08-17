@@ -12,7 +12,7 @@
 {% endwith %}
  <form id=project action="/project" method="POST" class="projectForm">
     <h3>{{ project.name }}</h3>
-    <input type="hidden" name="projectName" value="{{ project.name }}">
+    <input type="hidden" name="name" value="{{ project.name }}">
     <div>{{ form.gitrepo.label }}: {{ form.gitrepo(value=project.gitrepo) }}</div>
     <div id="steps">
     {% for step in project.steps %}
