@@ -40,7 +40,7 @@ class StepForm(Form):
     step = StringField('build step', [
         validators.Length(max=255, message='length must be shorter than 255 characters')
     ])
-    workdir = FieldList(StringField('workdir', [
+    workdir = StringField('workdir', [
         validators.Length(max=255, message='length must be shorter than 255 characters')
     ])
 
