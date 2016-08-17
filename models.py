@@ -11,7 +11,7 @@ class Step(db.EmbeddedDocument):
 class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
     gitrepo = db.StringField(max_length=255)
-    steps = db.ListField(db.EmbeddedDocumentField(Step), max_length=25)
+    steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
@@ -19,7 +19,7 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)
     port_offset = db.IntField()
     active = db.BooleanField(default=True)
-    projects = db.ListField(db.EmbeddedDocumentField(Project), max_length=25)
+    projects = db.EmbeddedDocumentListField(Project), max_length=25)
 
 class LoginForm(Form):
     username = StringField('username', [validators.DataRequired()])

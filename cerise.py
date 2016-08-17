@@ -76,7 +76,7 @@ def account():
     projects = current_user['projects']
     if request.method == 'POST':
         if form.validate_on_submit():
-            if current_user.projects.get(name__exists=form.name.data) == False:
+            if current_user.projects[form.name.data] == False:
                 newProject = Project(name=form.name.data)
                 newProject.gitrepo = form.gitrepo.data
                 newProject.steps = []
