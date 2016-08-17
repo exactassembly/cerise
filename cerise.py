@@ -112,7 +112,12 @@ def project():
                 project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
             current_user.save()
         else:
-            flash("error editing project.")
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash(u"Error in the %s field - %s" % (
+                        getattr(form, field).label.text,
+                        error
+                    ))
         return redirect('/project?name=' + request.form.get('projectName'))
     
 
