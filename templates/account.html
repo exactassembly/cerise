@@ -27,7 +27,7 @@
             </div>
         </div>
         <button id="addStep" type="button">add step</button>
-        {{ form.hidden_tag() }}
+        {{ form.csrf_token }}
         <input type="submit">
     </form>
 </div>
