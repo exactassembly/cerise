@@ -1,7 +1,8 @@
 from cerise import db
 from flask_login import UserMixin
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, validators, FieldList, FormField
+from wtforms import StringField, PasswordField, validators, FieldList, 
+from wtforms import Form as wtf.Form
 
 class Step(db.EmbeddedDocument):
     action = db.StringField(max_length=255)
@@ -36,7 +37,7 @@ class RegisterForm(Form):
         validators.EqualTo('confirm', message='passwords must match')])
     confirm = PasswordField('retype password')
 
-class StepForm(Form):
+class StepForm(wtf.Form):
     step = StringField('build step', [
         validators.Length(max=255, message='length must be shorter than 255 characters')
     ])
