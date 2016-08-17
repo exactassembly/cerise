@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
 <body>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
  <form id=project action="/project" method="POST" class="projectForm">
     <h3>{{ project.name }}</h3>
     <input type="hidden" name="projectName" value="{{ project.name }}">
