@@ -4,6 +4,7 @@ $( "#addProject" ).click(function(){
 });
 
 $( "#newProject" ).submit(function( event ){
+    event.preventDefault();
     payload = {};
     payload.name = $( this ).children("#name");
     payload.gitrepo = $( this ).children("#gitrepo");

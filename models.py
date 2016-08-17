@@ -3,10 +3,14 @@ from flask_login import UserMixin
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, validators, FieldList
 
+class Step(db.EmbeddedDocument):
+    action = db.StringField(max_length=255)
+    workdir = db.StringField(max_length=255)
+
 class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
     gitrepo = db.URLField(max_length=255)
-    steps = db.ListField(db.StringField(max_length=255))
+    steps = db.ListField(db.EmbeddedDocumentField(Step), max_length=25)
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
@@ -14,7 +18,7 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)
     port_offset = db.IntField()
     active = db.BooleanField(default=True)
-    projects = db.ListField(db.EmbeddedDocumentField(Project))
+    projects = db.ListField(db.EmbeddedDocumentField(Project), max_length=25)
 
 class LoginForm(Form):
     username = StringField('username', [validators.DataRequired()])
@@ -32,11 +36,17 @@ class RegisterForm(Form):
         validators.EqualTo('confirm', message='passwords must match')])
     confirm = PasswordField('retype password')
 
+class StepForm(Form):
+    step = StringField('build step', [
+        validators.Length(max=255, message='length must be shorter than 255 characters')
+    ])
+    workdir = FieldList(StringField('workdir', [
+        validators.Length(max=255, message='length must be shorter than 255 characters')
+    ])
+
 class ProjectForm(Form):
     name = StringField('project name', [
         validators.Length(max=255, message='length must be shorter than 255 characters')])
     gitrepo = StringField('git repo', [
         validators.Length(max=255, message='length must be shorter than 255 characters')])
-    steps = FieldList(StringField('build step', [
-        validators.Length(max=255, message='length must be shorter than 255 characters')
-    ]), min_entries=1, max_entries=15)
+    steps = FieldList(FormField(StepForm), min_entries=1, max_entries=25)

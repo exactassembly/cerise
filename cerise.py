@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user, login_required, L
 from flask_mongoengine import MongoEngine
 from models import *
 from werkzeug.security import generate_password_hash, check_password_hash
-import os, boto3, subprocess, requests
+import os, boto3, subprocess, requests, pickle
 from configparser import ConfigParser
 from urllib.parse import urlparse
 from random import randint
@@ -75,7 +75,8 @@ def account():
     form = ProjectForm()
     projects = current_user['projects']
     if request.method == 'POST' and form.validate_on_submit():
-        current_user.projects
+        filehandler = open(testmeme, 'w')
+        pickle.dump(form.steps.data, filehandler)
     return render_template('account.html', form=form, projects=projects)
 
 @app.route('/project')
