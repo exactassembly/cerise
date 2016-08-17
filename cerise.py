@@ -99,7 +99,7 @@ def account():
 @login_required
 def project():
     form = ProjectForm()
-    project = current_user.objects.get(name=request.args.get('name'))
+    project = current_user.projects.get(name=request.args.get('name'))
     return render_template('project.html', project=project, form=form)
 
 @app.route('/update', methods=['GET'])
