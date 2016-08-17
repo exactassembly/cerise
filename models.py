@@ -10,7 +10,7 @@ class Step(db.EmbeddedDocument):
 
 class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
-    gitrepo = db.URLField(max_length=255)
+    gitrepo = db.StringField(max_length=255)
     steps = db.ListField(db.EmbeddedDocumentField(Step), max_length=25)
 
 class User(db.Document, UserMixin):
