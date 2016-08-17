@@ -76,7 +76,7 @@ def account():
     projects = current_user['projects']
     if request.method == 'POST':
         if form.validate_on_submit():
-            return render_template('account.html', form=form, projects=projects)
+            return form
         else:
             for field, errors in form.errors.items():
                 for error in errors:
