@@ -3,7 +3,7 @@ $( "#addProject" ).click(function(){
     $( "#addProject" ).css('display', 'none');
 });
 
-$( "#addStep" ).click(funciton(){
+$( "#addStep" ).click(function(){
     var index = $( "#steps" ).children().length
     index = index+1
     $( "#steps" ).append(String.format('<input id="steps-{0} name="steps-{0}" type="text"></input>', index))
