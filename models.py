@@ -1,7 +1,7 @@
 from cerise import db
 from flask_login import UserMixin
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, validators, FieldList
+from wtforms import StringField, PasswordField, validators, FieldList, FormField
 
 class Step(db.EmbeddedDocument):
     action = db.StringField(max_length=255)
