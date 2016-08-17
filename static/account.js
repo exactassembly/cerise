@@ -9,8 +9,8 @@ $( "#addStep" ).click(function(){
     workdirID = "steps-" + index + "-workdir"
     $( "#steps" ).append(
     '<div>\
-        <input id="' + stepID + '" name="' + stepID + '" type="text"></input>\
-        <input id="' + workdirID + '" name="' + workdirID + '" type="text"></input>\
+        <input id="' + stepID + '" name="' + stepID + '" type="text" placeholder="action"></input>\
+        <input id="' + workdirID + '" name="' + workdirID + '" type="text" placeholder="workdir"></input>\
     </div>')     
 })
 
