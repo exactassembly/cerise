@@ -3,6 +3,7 @@
 <body>
  <form id=project action="/project" method="POST" class="projectForm">
     <h3>{{ project.name }}</h3>
+    <input type="hidden" name="projectName" value="{{ project.name }}">
     <div>{{ form.gitrepo.label }}: {{ form.gitrepo(value=project.gitrepo) }}</div>
     <div id="steps">
     {% for step in project.steps %}
@@ -12,6 +13,7 @@
         </div>
     {% endfor %}
     <button id="addStep" type="button">add step</button>
+    {{ form.csrf_token }}
     <input type="submit">
 </form>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>

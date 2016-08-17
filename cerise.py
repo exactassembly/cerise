@@ -99,7 +99,8 @@ def account():
 @login_required
 def project():
     form = ProjectForm()
-    project = current_user.projects.get(name=request.args.get('name'))
+    if request.method == 'GET':
+        project = current_user.projects.get(name=request.args.get('name'))
     if request.method == 'POST':
         if form.validate_on_submit():
             try:
