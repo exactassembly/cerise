@@ -19,7 +19,7 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)
     port_offset = db.IntField()
     active = db.BooleanField(default=True)
-    projects = db.EmbeddedDocumentListField(Project), max_length=25)
+    projects = db.EmbeddedDocumentListField(Project, max_length=25)
 
 class LoginForm(Form):
     username = StringField('username', [validators.DataRequired()])
