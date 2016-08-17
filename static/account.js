@@ -6,7 +6,7 @@ $( "#addProject" ).click(function(){
 $( "#addStep" ).click(function(){
     var index = $( "#steps" ).children().length
     index = index+1
-    $( "#steps" ).append(String.format('<input id="steps-{0} name="steps-{0}" type="text"></input>', index))
+    $( "#steps" ).append(format('<input id="steps-' + index + '" name="steps-' + index + ' type="text"></input>', index))
 })
 
 $( "#newProject" ).submit(function( event ){
