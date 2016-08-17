@@ -111,7 +111,7 @@ def project():
                 project.steps = []
                 for step in form.steps.data:
                     project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-                project.save()
+                current_user.save()
             except:
                 flash("Error updating project.")
         return redirect('/project?name=' + request.form.get('projectName'))
