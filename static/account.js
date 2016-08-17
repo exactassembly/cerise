@@ -11,7 +11,7 @@ $( "#addStep" ).click(function(){
 
 $( "#newProject" ).submit(function( event ){
     event.preventDefault();
-    var payload = {};
+    var payload;
     var payload.name = $( this ).children("#name");
     var payload.gitrepo = $( this ).children("#gitrepo");
     var payload.steps = {};
