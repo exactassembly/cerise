@@ -9,12 +9,12 @@
 <div>
     <button id="addProject" type="button">add project</button>
     <form id="newProject" action="/account" method="POST" style="display: none">
-        <div>{{ form.name }}</div>
-        <div>{{ form.gitrepo }}</div>
+        <div>{{ form.name.label }}: {{ form.name }}</div>
+        <div>{{ form.gitrepo.label }}: {{ form.gitrepo }}</div>
         <div id="steps">
             <div>
-                <input id="steps-0-steps" name="steps-0-steps" type="text">
-                <input id="steps-0-workdir" name="steps-0-workdir" type="text">
+                <input id="steps-0-steps" name="steps-0-steps" type="text" placeholder="action">
+                <input id="steps-0-workdir" name="steps-0-workdir" type="text" placeholder="workdir">
             </div>
         </div>
         <button id="addStep" type="button">add step</button>
