@@ -99,9 +99,7 @@ def account():
 @login_required
 def project():
     form = ProjectForm()
-    if request.method == 'GET':
-        project = current_user.projects.get(name=request.args.get('name'))
-        return render_template('project.html', project=project, form=form)
+    project = current_user.projects.get(name=request.args.get('name'))
     if request.method == 'POST':
         if form.validate_on_submit():
             try:
@@ -113,6 +111,7 @@ def project():
                 project.save()
             except:
                 flash("Error updating project.")
+    return render_template('project.html', project=project, form=form)
 
 @app.route('/update', methods=['GET'])
 @login_required
