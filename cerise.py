@@ -75,8 +75,7 @@ def account():
     form = ProjectForm()
     projects = current_user['projects']
     if request.method == 'POST' and form.validate_on_submit():
-        filehandler = open(testmeme, 'w')
-        pickle.dump(form.steps.data, filehandler)
+        return form
     return render_template('account.html', form=form, projects=projects)
 
 @app.route('/project')
