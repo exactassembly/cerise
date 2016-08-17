@@ -37,7 +37,7 @@ class RegisterForm(Form):
         validators.EqualTo('confirm', message='passwords must match')])
     confirm = PasswordField('retype password')
 
-class StepForm(wtf.Form):
+class StepForm(wtForm):
     step = StringField('build step', [
         validators.Length(max=255, message='length must be shorter than 255 characters')
     ])
