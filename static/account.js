@@ -13,17 +13,3 @@ $( "#addStep" ).click(function(){
         <input id="' + workdirID + '" name="' + workdirID + '" type="text" placeholder="workdir"></input>\
     </div>')     
 })
-
-$( "#newProject" ).submit(function( event ){
-    event.preventDefault();
-    var payload = {};
-    payload.name = $( this ).children("#name");
-    payload.gitrepo = $( this ).children("#gitrepo");
-    payload.steps = {};
-    $( this ).children(".steps").children("li").each(function(index, value){
-        payload.steps[index] = value;
-    })
-    $.post( "/account", payload, function(){
-        location.reload();
-    });
-});
