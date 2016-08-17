@@ -75,14 +75,17 @@ def account():
     form = ProjectForm()
     projects = current_user['projects']
     if request.method == 'POST':
-        if form.validate_on_submit() and (current_user.projects.get(name__exists=form.name.data == False):
-            newProject = Project(name=form.name.data)
-            newProject.gitrepo = form.gitrepo.data
-            newProject.steps = []
-            for step in form.steps.data:
-                newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-            current_user.projects.append(newProject)
-            current_user.save()
+        if form.validate_on_submit():
+            if current_user.projects.get(name__exists=form.name.data) == False:
+                newProject = Project(name=form.name.data)
+                newProject.gitrepo = form.gitrepo.data
+                newProject.steps = []
+                for step in form.steps.data:
+                    newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+                current_user.projects.append(newProject)
+                current_user.save()
+            else:
+                flash("Project name already exists.")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
