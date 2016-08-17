@@ -95,11 +95,22 @@ def account():
                     ))
     return render_template('account.html', form=form, projects=projects)
 
-@app.route('/project')
+@app.route('/project', methods=['GET', 'POST'])
 @login_required
 def project():
     form = ProjectForm()
     project = current_user.projects.get(name=request.args.get('name'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            try:
+                project = current_user.projects.get(name=request.form.get('projectName'))
+                project.gitrepo = form.gitrepo.data
+                project.steps = []
+                for step in form.steps.data:
+                    project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+                project.save()
+            except:
+                flash("Error updating project.")
     return render_template('project.html', project=project, form=form)
 
 @app.route('/update', methods=['GET'])

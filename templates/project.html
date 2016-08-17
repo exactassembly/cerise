@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
- <form id=project class="projectForm">
+ <form id=project action="/project" method="POST" class="projectForm">
     <h3>{{ project.name }}</h3>
     <div>{{ form.gitrepo.label }}: {{ form.gitrepo(value=project.gitrepo) }}</div>
     <div id="steps">
