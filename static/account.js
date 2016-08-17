@@ -16,7 +16,7 @@ $( "#newProject" ).submit(function( event ){
     payload.gitrepo = $( this ).children("#gitrepo");
     payload.steps = {};
     $( this ).children(".steps").children("li").each(function(index, value){
-        var payload.steps[index] = value;
+        payload.steps[index] = value;
     })
     $.post( "/account", payload, function(){
         location.reload();
