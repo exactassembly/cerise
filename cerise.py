@@ -126,7 +126,7 @@ def project():
 @login_required
 def builders(path):
     port = sum([current_user.port_offset, 20000])
-    r = requests.get('localhost:' + port + "/json/" + path)
+    r = requests.get("localhost:" + str(port) + "/json/" + path)
     return(r.json())
 
 @app.route('/logout', methods=['POST'])
