@@ -23,7 +23,7 @@ def create_master(user):
     c = ConfigParser()
     c.read('./conf/default.conf')
     c.set('main', 'user', user.username)
-    with open(directory + 'user.username' + '.conf', 'w') as f:
+    with open(directory + '/user.conf', 'w') as f:
         c.write(f)
     subprocess.call(['ln', '-s', os.getcwd() + '/conf/caiman.cfg', directory + '/master.cfg'])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
