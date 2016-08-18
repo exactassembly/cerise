@@ -38,6 +38,7 @@ function updateTable(){
             var updateKeys = Object.keys(data);
             for (i = 0; i < updateKeys; i++) {
                 $('#build' + data[updateKeys[i]]).text( data[updateKeys[i]].text )            
+            }
         });
     }
 };
