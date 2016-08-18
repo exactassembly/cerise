@@ -31,7 +31,8 @@ def create_master(user):
 
 @login_manager.user_loader
 def load_user(id):
-    user = User.objects.get(id=id)
+    try:
+        user = User.objects.get(id=id)
     if not user:
         return None
     return user
