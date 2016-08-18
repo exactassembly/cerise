@@ -33,9 +33,9 @@ def create_master(user):
 def load_user(id):
     try:
         user = User.objects.get(id=id)
-    except queryset._document.DoesNotExist(msg):
+        return user
+    except:
         return None
-    return user
 
 @app.route('/')
 def index():
@@ -60,7 +60,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
-    if not User.objects.get(username=form.username.data):
+    if not User.objects.filter(username=form.username.data):
         if form.validate_on_submit():
             user = User(username=form.username.data, email=form.email.data)
             user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
