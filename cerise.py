@@ -84,6 +84,7 @@ def account():
                     newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                 current_user.projects.append(newProject)
                 current_user.save()
+                subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)            
             else:
                 flash("Project name already exists.")
         else:
@@ -111,6 +112,7 @@ def project():
             for step in form.steps.data:
                 project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
             current_user.save()
+            subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)
         else:
             for field, errors in form.errors.items():
                 for error in errors:
