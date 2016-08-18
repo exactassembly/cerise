@@ -26,7 +26,7 @@ function createTable(){
             $('#build-light').append('</tr>');
         });
     }
-};
+}
 
 function updateTable(){
     for (i = 0; i < keys.length; i++) {
@@ -37,11 +37,10 @@ function updateTable(){
         $.get(u, function( data ){
             var updateKeys = Object.keys(data);
             for (i = 0; i < updateKeys; i++) {
-                $('#build' + data[updateKeys[i]]).text( data[updateKeys[i]].text );            
+                $('#build' + data[updateKeys[i]]).text( data[updateKeys[i]] );            
             }
         });
     }
-};
-
+}
 
 var interval = setInterval(updateTable, 5000);
