@@ -33,7 +33,7 @@ def create_master(user):
 def load_user(id):
     try:
         user = User.objects.get(id=id)
-    if not user:
+    except queryset._document.DoesNotExist(msg):
         return None
     return user
 
