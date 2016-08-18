@@ -1,4 +1,4 @@
-var masterAddress = location.hostname + ":" + location.port
+var masterAddress = "http://" + location.hostname + ":" + location.port
 var builders = $.get(masterAddress + "/api/builders", createTable());
 var keys;
 var buildsContext = {};

@@ -124,7 +124,7 @@ def project():
 
 @app.route('/api/<path:path>', methods=['GET'])
 @login_required
-def builders():
+def builders(path):
     port = sum([current_user.port_offset, 20000])
     r = requests.get('localhost:' + port + "/json/" + path)
     return(r.json())
