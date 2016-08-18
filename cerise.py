@@ -121,13 +121,12 @@ def project():
                         error
                     ))
         return redirect('/project?name=' + request.form.get('name'))
-    
 
-@app.route('/update', methods=['GET'])
+@app.route('/api/<path:path>', methods=['GET'])
 @login_required
-def update():
-    port = sum([curent_user.port_offset, 20000])
-    r = requests.get('localhost:' + port + "/builds")
+def builders():
+    port = sum([current_user.port_offset, 20000])
+    r = requests.get('localhost:' + port + "/json/" + path)
     return(r.json())
 
 @app.route('/logout', methods=['POST'])
