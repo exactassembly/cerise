@@ -10,6 +10,7 @@ $( "#addStep" ).click(function(){
 });
 
 $( "#deleteProject" ).click(function(){
+    $( "#deleteProject" ).css({"display": "none"});
     $( "#deleteProject" ).after( '<button id="confirmDelete" type="button">i\'m sure!</button>' );
     $( "#confirmDelete" ).click(function(){
         $.post("/project", { name: thisProject, action: 'delete' });
