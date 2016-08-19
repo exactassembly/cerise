@@ -109,7 +109,7 @@ def project():
         project = current_user.projects.get(name=currentProject)
         return render_template('project.html', project=project, form=form)
     if request.method == 'POST':
-        if request.form.get['action'] == 'delete':
+        if request.form.get('action') == 'delete':
             project = current_user.projects.get(name=request.form.get('name'))
             project.delete()
             return redirect(url_for('account'))
