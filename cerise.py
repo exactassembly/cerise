@@ -139,5 +139,5 @@ def logout():
 if __name__ == "__main__":
     for user in User.objects:
         directory = "/build/" + user.username
-        subprocess.Popen(['buildbot', 'start'], cwd=directory)
+        subprocess.Popen(['buildbot', 'start'], cwd=directory, env={'USER': user.username})
     app.run(host='0.0.0.0')
