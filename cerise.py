@@ -84,7 +84,7 @@ def account():
                     newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                 current_user.projects.append(newProject)
                 current_user.save()
-                if current_user.projects.length = 1: # start buildbot for first time
+                if current_user.projects.length == 1: # start buildbot for first time
                     subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
                 else: # otherwise reconfig
                     subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)            
