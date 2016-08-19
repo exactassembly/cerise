@@ -12,6 +12,8 @@ $( "#addStep" ).click(function(){
 $( "#deleteProject" ).click(function(){
     $( "#deleteProject" ).replaceWith( '<button id="confirmDelete" type="button">i\'m sure!</button>' );
     $( "#confirmDelete" ).click(function(){
-        $.post("/project", { name: thisProject, action: 'delete' });
+        $.post("/project", { name: thisProject, action: 'delete' }, function( data ){
+            window.location.replace(data.redirect);
+        });
     });
 });
