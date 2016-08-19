@@ -80,14 +80,15 @@ def account():
                 newProject = Project(name=form.name.data)
                 newProject.gitrepo = form.gitrepo.data
                 newProject.steps = []
+                directory = "/build/" + current_user.username
                 for step in form.steps.data:
                     newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                 current_user.projects.append(newProject)
                 current_user.save()
-                if current_user.projects.length == 1: # start buildbot for first time
-                    subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
-                else: # otherwise reconfig
-                    subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)            
+                if current_user.projects.length > 1: # reconfig
+                    subprocess.Popen(['buildbot', 'reconfig'], cwd=directory, env=dict(os.environ, USER= user.username))            
+                else: # otherwise start buildbot first time
+                    subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))                
             else:
                 flash("Project name already exists.")
         else:
@@ -108,6 +109,10 @@ def project():
         project = current_user.projects.get(name=currentProject)
         return render_template('project.html', project=project, form=form)
     if request.method == 'POST':
+        if request.form.get['action'] == 'delete':
+            project = current_user.projects.get(name=request.form.get('name'))
+            project.delete()
+            return redirect(url_for('account'))
         if form.validate_on_submit():
             project = current_user.projects.get(name=request.form.get('name'))
             project.gitrepo = form.gitrepo.data
@@ -141,5 +146,6 @@ def logout():
 if __name__ == "__main__":
     for user in User.objects:
         directory = "/build/" + user.username
-        subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
+        if user.projects.length > 0:
+            subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
     app.run(host='0.0.0.0')

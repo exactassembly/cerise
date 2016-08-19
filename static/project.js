@@ -7,4 +7,11 @@ $( "#addStep" ).click(function(){
         <input id="' + stepID + '" name="' + stepID + '" type="text" placeholder="action"></input>\
         <input id="' + workdirID + '" name="' + workdirID + '" type="text" placeholder="workdir"></input>\
     </div>')     
-})
+});
+
+$( "#deleteProject" ).click(function(){
+    $( "#deleteProject" ).after( '<button id="confirmDelete" type="button">i\'m sure!</button>' );
+    $( "#confirmDelete" ).click(function(){
+        $.post("/project", { name: thisProject, action: 'delete' });
+    });
+});
