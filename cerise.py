@@ -111,7 +111,7 @@ def project():
     if request.method == 'POST':
         if request.form.get('action') == 'delete':
             project = User.objects(username=current_user.username).update_one(pull__projects__name=request.form.get('name'))
-            return
+            return redirect(url_for('account'))
         if form.validate_on_submit():
             project = current_user.projects.get(name=request.form.get('name'))
             project.gitrepo = form.gitrepo.data
