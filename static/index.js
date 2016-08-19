@@ -1,5 +1,4 @@
-var masterAddress = "http://" + location.hostname + ":" + location.port
-var builders = $.get(masterAddress + "/api/builders", createTable());
+var builders = $.get("/api/builders", createTable());
 var keys;
 var buildsContext = {};
 
@@ -8,7 +7,7 @@ function createTable(){
     for (i = 0; i < keys.length; i++) {
         var b = builders[keys[i]];
         buildsContext[keys[i]] = [];
-        $.get(masterAddress + "/api/builders/" + b + "/builds?select=-1&select=-2&select=-3&select=-4&select=-5",
+        $.get("/api/builders/" + b + "/builds?select=-1&select=-2&select=-3&select=-4&select=-5",
         function( data ){
             var builds = data;
             var buildKeys = Object.keys(builds);
@@ -29,7 +28,7 @@ function createTable(){
 
 function updateTable(){
     for (i = 0; i < keys.length; i++) {
-        var u = masterAddress + "/api/builders/" + keys[i] + "/builds?select=" + buildsContext[keys[i]][0]; // format first with '?'
+        var u = "/api/builders/" + keys[i] + "/builds?select=" + buildsContext[keys[i]][0]; // format first with '?'
         for (n = 1; n < buildsContext[keys[i]].length ; i++) { // start at 1
             u = u + "&select=" + buildsContext[keys[i]][n];
         }
