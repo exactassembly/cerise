@@ -85,7 +85,7 @@ def account():
                     newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                 current_user.projects.append(newProject)
                 current_user.save()
-                if current_user.projects.length > 1: # reconfig
+                if len(current_user.projects) > 1: # reconfig
                     subprocess.Popen(['buildbot', 'reconfig'], cwd=directory, env=dict(os.environ, USER= user.username))            
                 else: # otherwise start buildbot first time
                     subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))                
@@ -146,6 +146,6 @@ def logout():
 if __name__ == "__main__":
     for user in User.objects:
         directory = "/build/" + user.username
-        if user.projects.length > 0:
+        if len(user.projects) > 0:
             subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
     app.run(host='0.0.0.0')
