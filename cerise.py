@@ -27,7 +27,7 @@ def create_master(user):
         c.write(f)
     subprocess.call(['ln', '-s', os.getcwd() + '/conf/caiman.cfg', directory + '/master.cfg'])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
-    subprocess.Popen(['buildbot', 'start'], cwd=directory)
+    subprocess.Popen(['buildbot', 'start'], cwd=directory, env={'USER': user.username})
 
 @login_manager.user_loader
 def load_user(id):
