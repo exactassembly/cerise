@@ -110,8 +110,7 @@ def project():
         return render_template('project.html', project=project, form=form)
     if request.method == 'POST':
         if request.form.get('action') == 'delete':
-            project = current_user.projects.get(name=request.form.get('name'))
-            project.delete()
+            project = current_user.projects.update_one(pull__name=request.form.get('name'))
             return redirect(url_for('account'))
         if form.validate_on_submit():
             project = current_user.projects.get(name=request.form.get('name'))
