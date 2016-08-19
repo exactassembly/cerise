@@ -27,7 +27,6 @@ def create_master(user):
         c.write(f)
     subprocess.call(['ln', '-s', os.getcwd() + '/conf/caiman.cfg', directory + '/master.cfg'])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
-    subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
 
 @login_manager.user_loader
 def load_user(id):
@@ -85,7 +84,10 @@ def account():
                     newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                 current_user.projects.append(newProject)
                 current_user.save()
-                subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)            
+                if current_user.projects.length = 1: # start buildbot for first time
+                    subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
+                else: # otherwise reconfig
+                    subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)            
             else:
                 flash("Project name already exists.")
         else:
