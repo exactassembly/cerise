@@ -8,9 +8,14 @@ class Step(db.EmbeddedDocument):
     action = db.StringField(max_length=255)
     workdir = db.StringField(max_length=255)
 
+class Repo(db.EmbeddedDocument):
+    name = db.StringField(max_length=255)
+    url = db.StringField(max_length=255)
+
 class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
     gitrepo = db.StringField(max_length=255)
+    sourcerepos = db.EmbeddedDocumentListField(Repo, max_length=25)
     steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
 class User(db.Document, UserMixin):

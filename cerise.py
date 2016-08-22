@@ -77,18 +77,21 @@ def account():
     if request.method == 'POST':
         if form.validate_on_submit():
             if not current_user.projects.filter(name=form.name.data):
-                newProject = Project(name=form.name.data)
-                newProject.gitrepo = form.gitrepo.data
-                newProject.steps = []
-                directory = "/build/" + current_user.username
-                for step in form.steps.data:
-                    newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-                current_user.projects.append(newProject)
-                current_user.save()
-                if len(current_user.projects) > 1: # reconfig
-                    subprocess.Popen(['buildbot', 'reconfig'], cwd=directory, env=dict(os.environ, USER= user.username))            
-                else: # otherwise start buildbot first time
-                    subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))                
+                if urlparse(form.gitrepo.data).path:                
+                    newProject = Project(name=form.name.data)
+                    newProject.gitrepo = form.gitrepo.data
+                    newProject.steps = []
+                    directory = "/build/" + current_user.username
+                    for step in form.steps.data:
+                        newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+                    current_user.projects.append(newProject)
+                    current_user.save()
+                    if len(current_user.projects) > 1: # reconfig
+                        subprocess.Popen(['buildbot', 'reconfig'], cwd=directory, env=dict(os.environ, USER= current_user.username))            
+                    else: # otherwise start buildbot first time
+                    subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= current_user.username))                
+                else:
+                    flash("URL is not valid.")
             else:
                 flash("Project name already exists.")
         else:
@@ -113,13 +116,16 @@ def project():
             project = User.objects(username=current_user.username).update_one(pull__projects__name=request.form.get('name'))
             return redirect(url_for('account'))
         if form.validate_on_submit():
-            project = current_user.projects.get(name=request.form.get('name'))
-            project.gitrepo = form.gitrepo.data
-            project.steps = []
-            for step in form.steps.data:
-                project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-            current_user.save()
-            subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)
+            if urlparse(form.gitrepo.data).path:
+                project = current_user.projects.get(name=request.form.get('name'))
+                project.gitrepo = form.gitrepo.data
+                project.steps = []
+                for step in form.steps.data:
+                    project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+                current_user.save()
+                subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)
+            else:
+                flash('URL is not valid.')
         else:
             for field, errors in form.errors.items():
                 for error in errors:
