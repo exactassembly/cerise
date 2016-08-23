@@ -3,7 +3,17 @@ var keys;
 var buildsContext = {};
 
 function createTable(){
-    var keys = Object.keys(builders);
+    if (thisProject) { // if buildlight is invoked on /project page, where "thisProject" is defined inline
+        var keys = [];
+        keys.push(thisProject);
+        if (subProjects){
+            for (i = 0; i < subProjects.length; i++) {
+                keys.push(thisProject + "-" + subProjects[i].name);
+        }}
+    }
+    else {
+        var keys = Object.keys(builders);
+    }
     for (i = 0; i < keys.length; i++) {
         var b = builders[keys[i]];
         buildsContext[keys[i]] = [];

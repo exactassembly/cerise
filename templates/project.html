@@ -10,12 +10,6 @@
     </ul>
   {% endif %}
 {% endwith %}
-<div id=branches>
-  <a href="/project?name={{ project.name }}">main</a>
-{% for sourcerepo in project %}
-  <a href="/project?name={{ project.name }}&sub={{ sourcerepo.name }}">{{ sourcerepo.name }}</a>
-{% endfor %}
-</div>
  <form id=project action="/project" method="POST" class="projectForm">
     <h3>{{ project.name }}</h3>
     <input type="hidden" name="name" value="{{ project.name }}">
@@ -41,9 +35,15 @@
     <input type="submit">
 </form>
 <button id="deleteProject" type="button">delete project</button>
+<table id="build-light">
+</table>
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
 <script src="/static/project.js" type="text/javascript"></script>
 <script src="/static/buildlight.js" type="text/javascript"></script>
 <script type="text/javascript">var thisProject = '{{ project.name }}'</script>
+{% if project.sourcerepos %}
+  <script type="text/javascript">var subProjects = '{{ project.sourcerepos|tojson|safe }}'</script>
+{% endif %}
+</body>
 </html>
 

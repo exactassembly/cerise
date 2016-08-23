@@ -11,12 +11,12 @@ $( "#addStep" ).click(function(){
 
 $( "#addRepo" ).click(function(){
     var index = $( "#sourceRepos" ).children().length;
-    stepID = "steps-" + index + "-step"
-    workdirID = "steps-" + index + "-workdir"
-    $( "#steps" ).append(
+    nameID = "subs-" + index + "-name"
+    urlID = "subs-" + index + "-url"
+    $( "#sourceRepos" ).append(
     '<div>\
-        <input id="' + stepID + '" name="' + stepID + '" type="text" placeholder="action"></input>\
-        <input id="' + workdirID + '" name="' + workdirID + '" type="text" placeholder="workdir"></input>\
+        <input id="' + nameID + '" name="' + nameID + '" type="text" placeholder="name"></input>\
+        <input id="' + urlID + '" name="' + urlID + '" type="text" placeholder="url"></input>\
     </div>')     
 });
 

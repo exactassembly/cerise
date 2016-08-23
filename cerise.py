@@ -110,8 +110,6 @@ def project():
     if request.method == 'GET':
         currentProject = request.args.get('name')
         project = current_user.projects.get(name=currentProject)
-        if request.args.get('sub'):
-            project['sub'] = request.args.get('sub')
         return render_template('project.html', project=project, form=form)
     if request.method == 'POST':
         if request.form.get('action') == 'delete':
