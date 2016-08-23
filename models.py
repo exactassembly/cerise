@@ -52,6 +52,16 @@ class StepForm(wtForm):
         validators.DataRequired()
     ])
 
+class SubForm(wtForm):
+    name = StringField('name', [
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()
+    ])
+    url = StringField('url', [
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()
+    ])
+
 class ProjectForm(Form):
     name = StringField('project name', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
@@ -60,3 +70,4 @@ class ProjectForm(Form):
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()])
     steps = FieldList(FormField(StepForm), min_entries=1, max_entries=25)
+    subs = FieldList(FormField(SubForm), min_entries=0, max_entries=25)

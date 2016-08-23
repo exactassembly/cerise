@@ -110,6 +110,8 @@ def project():
     if request.method == 'GET':
         currentProject = request.args.get('name')
         project = current_user.projects.get(name=currentProject)
+        if request.args.get('sub'):
+            project['sub'] = request.args.get('sub')
         return render_template('project.html', project=project, form=form)
     if request.method == 'POST':
         if request.form.get('action') == 'delete':
@@ -122,6 +124,10 @@ def project():
                 project.steps = []
                 for step in form.steps.data:
                     project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+                if form.subs.data:
+                    project.sourcerepos = []
+                    for sub in form.subs.data:
+                        project['sourcerepos'].append(Repo(name=sub['name'], url=sub['url']))
                 current_user.save()
                 subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)
             else:
