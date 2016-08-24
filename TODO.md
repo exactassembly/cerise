@@ -1,6 +1,10 @@
-* exception handling
+* ### yield log functionality
 
-* figure out WTFforms ids and packaging POST payload
+* http://exploreflask.com/
+
+* force build ux
+
+* exception handling
 
 POST schema:
 

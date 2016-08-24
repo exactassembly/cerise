@@ -139,12 +139,18 @@ def project():
                     ))
         return redirect('/project?name=' + request.form.get('name'))
 
-@app.route('/api/<path:path>', methods=['GET'])
+@app.route('/api/builders/<path:path>', methods=['GET'])
 @login_required
 def builders(path):
     port = sum([current_user.port_offset, 20000])
     r = requests.get("localhost:" + str(port) + "/json/" + path)
     return(r.json())
+
+@app.route('/api/log/<int:buildnumber>')
+@login_required
+def log(buildnumber):
+    port = sum([current_user.port_offset, 20000])
+    ## [ magic tail stream here ]
 
 @app.route('/logout', methods=['POST'])
 @login_required
