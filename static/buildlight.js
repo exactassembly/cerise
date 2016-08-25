@@ -22,7 +22,7 @@ function createTable(){
             var builds = data;
             var buildKeys = Object.keys(builds);
             $('#build-light').append('<tr id="' + keys[i] + '">');
-            $('#' + keys[i]).append('<th>' + keys[i] + '</th>');
+            $('#' + keys[i]).append('<th><a href="/api/force/' + keys[i] + '>' + keys[i] + '</a></th>');
             for (i = 0; i < buildKeys.length; i++) {
                 var thisBuild = builds[buildKeys[i]];
                 var buildNumber = thisBuild.number

@@ -144,7 +144,14 @@ def project():
 def builders(path):
     port = sum([current_user.port_offset, 20000])
     r = requests.get("localhost:" + str(port) + "/json/" + path)
-    return(r.json())
+    return(r)
+
+@app.route('/api/force/<builder>', methods=['GET'])
+@login_required
+def force(builder):
+    port = sum([current_user.port_offset, 20000])
+    r = requests.get("localhost:" + str(port) + '/builders/' + builder + '/force')
+    return(r)
 
 @app.route('/api/log/<int:buildnumber>')
 @login_required
