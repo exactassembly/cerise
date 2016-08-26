@@ -70,7 +70,7 @@ def register():
             user.save()
             login_user(user)
             create_master(user)
-            return redirect(url_for('index'))
+            return redirect(url_for('account'))
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
@@ -92,7 +92,7 @@ def account():
                     if len(current_user.projects) > 1: # reconfig
                         subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
                     else: # otherwise start buildbot first time
-                    subprocess.Popen(['buildbot', 'start'], cwd=directory)                
+                        subprocess.Popen(['buildbot', 'start'], cwd=directory)                
                 else:
                     flash("URL is not valid.")
             else:
@@ -172,5 +172,7 @@ if __name__ == "__main__":
     for user in User.objects:
         directory = os.path.join('/build', user.username)
         if len(user.projects) > 0:
-            subprocess.Popen(['buildbot', 'start'], cwd=directory)
+            p = subprocess.Popen(['buildbot', 'start'], cwd=directory)
+            user.pid = p.pid
+            user.save()
     app.run(host='0.0.0.0')
