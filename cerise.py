@@ -17,15 +17,18 @@ login_manager.init_app(app)
 ec2 = boto3.resource('ec2')
 
 def create_master(user):
-    directory = "/build/" + user.username
-    if not os.path.exists(directory):
+    directory = os.path.join('/build' + user.username)
+    try:
         os.mkdir(directory)
+    except OSError as e:
+        if e[0] = 17:   # path exists
+            pass
     c = ConfigParser()
-    c.read('./conf/default.conf')
+    c.read(os.path.join(os.getcwd(), 'conf/default.conf'))
     c.set('main', 'user', user.username)
     with open(directory + '/user.conf', 'w') as f:
         c.write(f)
-    subprocess.call(['ln', '-s', os.getcwd() + '/conf/caiman.cfg', directory + '/master.cfg'])
+    subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(directory, 'master.cfg')])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
 
 @login_manager.user_loader
@@ -81,15 +84,15 @@ def account():
                     newProject = Project(name=form.name.data)
                     newProject.gitrepo = form.gitrepo.data
                     newProject.steps = []
-                    directory = "/build/" + current_user.username
+                    directory = os.path.join('/build', current_user.username)
                     for step in form.steps.data:
                         newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                     current_user.projects.append(newProject)
                     current_user.save()
                     if len(current_user.projects) > 1: # reconfig
-                        subprocess.Popen(['buildbot', 'reconfig'], cwd=directory, env=dict(os.environ, USER= current_user.username))            
+                        subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
                     else: # otherwise start buildbot first time
-                    subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= current_user.username))                
+                    subprocess.Popen(['buildbot', 'start'], cwd=directory)                
                 else:
                     flash("URL is not valid.")
             else:
@@ -127,7 +130,7 @@ def project():
                     for sub in form.subs.data:
                         project['sourcerepos'].append(Repo(name=sub['name'], url=sub['url']))
                 current_user.save()
-                subprocess.Popen(['buildbot', 'reconfig'], cwd="/build/" + current_user.username)
+                subprocess.Popen(['buildbot', 'reconfig'], cwd=os.path.join('/build', current_user.username)
             else:
                 flash('URL is not valid.')
         else:
@@ -143,14 +146,14 @@ def project():
 @login_required
 def builders(path):
     port = sum([current_user.port_offset, 20000])
-    r = requests.get("localhost:" + str(port) + "/json/" + path)
+    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/json/', path))
     return(r)
 
 @app.route('/api/force/<builder>', methods=['GET'])
 @login_required
 def force(builder):
     port = sum([current_user.port_offset, 20000])
-    r = requests.get("localhost:" + str(port) + '/builders/' + builder + '/force')
+    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/builders/', builder, '/force'))
     return(r)
 
 @app.route('/api/log/<int:buildnumber>')
@@ -167,7 +170,7 @@ def logout():
 
 if __name__ == "__main__":
     for user in User.objects:
-        directory = "/build/" + user.username
+        directory = os.path.join('/build', user.username)
         if len(user.projects) > 0:
-            subprocess.Popen(['buildbot', 'start'], cwd=directory, env=dict(os.environ, USER= user.username))
+            subprocess.Popen(['buildbot', 'start'], cwd=directory)
     app.run(host='0.0.0.0')
