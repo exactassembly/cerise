@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user, login_required, L
 from flask_mongoengine import MongoEngine
 from models import *
 from werkzeug.security import generate_password_hash, check_password_hash
-import os, boto3, subprocess, requests, pickle
+import os, boto3, subprocess, requests
 from configparser import ConfigParser
 from urllib.parse import urlparse
 from random import randint
@@ -77,6 +77,11 @@ def register():
 def account():
     form = ProjectForm()
     projects = current_user['projects']
+    try:
+        os.kill(current_user.pid, 0)
+        processLive = True
+    except OSError:
+        processLive = False
     if request.method == 'POST':
         if form.validate_on_submit():
             if not current_user.projects.filter(name=form.name.data):
@@ -89,10 +94,12 @@ def account():
                         newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
                     current_user.projects.append(newProject)
                     current_user.save()
-                    if len(current_user.projects) > 1: # reconfig
+                    if len(current_user.projects) > 1 and processLive: # reconfig
                         subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
                     else: # otherwise start buildbot first time
-                        subprocess.Popen(['buildbot', 'start'], cwd=directory)                
+                        p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
+                        current_user.pid = p.pid
+                        current_user.save()              
                 else:
                     flash("URL is not valid.")
             else:
@@ -104,12 +111,17 @@ def account():
                         getattr(form, field).label.text,
                         error
                     ))
-    return render_template('account.html', form=form, projects=projects)
+    return render_template('account.html', form=form, projects=projects, processLive=processLive)
 
 @app.route('/project', methods=['GET', 'POST'])
 @login_required
 def project():
     form = ProjectForm()
+    try:
+        os.kill(current_user.pid, 0)
+        processLive = True
+    except OSError:
+        processLive = False
     if request.method == 'GET':
         currentProject = request.args.get('name')
         project = current_user.projects.get(name=currentProject)
@@ -130,7 +142,10 @@ def project():
                     for sub in form.subs.data:
                         project['sourcerepos'].append(Repo(name=sub['name'], url=sub['url']))
                 current_user.save()
-                subprocess.Popen(['buildbot', 'reconfig'], cwd=os.path.join('/build', current_user.username)
+                if processLive:
+                    subprocess.Popen(['buildbot', 'reconfig'], cwd=os.path.join('/build', current_user.username)
+                else:
+                    subprocess.Popen(['buildbot', 'start'], cwd=os.path.join('/build', current_user.username)                    
             else:
                 flash('URL is not valid.')
         else:
@@ -142,25 +157,37 @@ def project():
                     ))
         return redirect('/project?name=' + request.form.get('name'))
 
+@app.route('/account/masterlog', methods=['GET'])
+@login_required
+def masterLog():
+    with open(os.path.join('/build', current_user.username, 'twistd.log')) as f:
+        payload = f.read()
+        return payload   
+
 @app.route('/api/builders/<path:path>', methods=['GET'])
 @login_required
 def builders(path):
     port = sum([current_user.port_offset, 20000])
-    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/json/', path))
+    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/json', path))
     return(r)
 
 @app.route('/api/force/<builder>', methods=['GET'])
 @login_required
 def force(builder):
     port = sum([current_user.port_offset, 20000])
-    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/builders/', builder, '/force'))
+    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/builders', builder, 'force'))
     return(r)
 
-@app.route('/api/log/<int:buildnumber>')
+@app.route('/api/log/<str:builder>/<int:buildnumber>')
 @login_required
 def log(buildnumber):
     port = sum([current_user.port_offset, 20000])
-    ## [ magic tail stream here ]
+    j = requests.get(url.parse.urljoin('127.0.0.1', str(port), '/json/builders', builder, 'builds', buildnumber), params={'as_text' : '1'}).json()
+    payload = {}
+    for i in j['steps']:
+        r = requests.get(i['logs'][1])
+        payload[i['name']] = r
+    return render_template('log.html', payload=payload)
 
 @app.route('/logout', methods=['POST'])
 @login_required

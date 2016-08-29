@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html>
 <body>
+{% if processLive %}
+    <div id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></div>
+{% elif not processLive %}
+    <div id="masterStatus">master status: stopped <a href="/account/masterlog">[log]</a></div>
 <div id="projects">
     {% for project in projects %}
         <a href="/project?name={{ project.name }}">{{ project.name }}</a>
