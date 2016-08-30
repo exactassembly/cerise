@@ -8,7 +8,7 @@ from configparser import ConfigParser
 from urllib.parse import urlparse
 from random import randint
 from time import sleep
-
+import glob
 
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
@@ -191,6 +191,7 @@ def log(builder, buildnumber, step):
     port = sum([current_user.port_offset, 20000])
     filePattern = str(buildnumber) + '-log-' + step + '*'
     filename = glob.glob(os.path.join('/build', current_user.username, builder, filePattern))[0]
+    print(filename)
     def logGenerator():
         if os.path.splitext(filename)[1] == '.bz2':
             with bz2.BZ2File(filename) as f:
@@ -200,9 +201,11 @@ def log(builder, buildnumber, step):
         else:
             with open(filename) as f:
                 while True:
-                    yield f.readlines()
+                    lines = f.readlines()
+                    for line in lines:
+                        yield line
                     sleep(.25)          
-    return Response(logGenerator(), mimetype='text/plain')
+    return Response(logGenerator(), mimetype='text/event-stream')
 
 @app.route('/logout', methods=['POST'])
 @login_required
