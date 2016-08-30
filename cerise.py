@@ -165,10 +165,7 @@ def project():
 def masterLog():
     with open(os.path.join('/build', current_user.username, 'twistd.log')) as f:
         payload = f.readlines()[-100:]
-    def logGenerator():
-        for line in payload:
-            yield line
-    return Response(logGenerator(), mimetype='text/plain')
+    return payload
 
 @app.route('/api/builders/<path:path>', methods=['GET'])
 @login_required
