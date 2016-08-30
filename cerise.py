@@ -189,7 +189,7 @@ def force(builder):
 @login_required
 def log(builder, buildnumber, step):
     port = sum([current_user.port_offset, 20000])
-    filePattern = buildnumber + '-log-' + step + '*'
+    filePattern = str(buildnumber) + '-log-' + step + '*'
     filename = glob.glob(os.path.join('/build', current_user.username, builder, filePattern))[0]
     def logGenerator():
         if os.path.splitext(filename)[1] == '.bz2':
