@@ -21,7 +21,7 @@ def create_master(user):
     try:
         os.mkdir(directory)
     except OSError as e:
-        if e[0] = 17:   # path exists
+        if e[0] == 17:   # path exists
             pass
     c = ConfigParser()
     c.read(os.path.join(os.getcwd(), 'conf/default.conf'))
@@ -143,9 +143,9 @@ def project():
                         project['sourcerepos'].append(Repo(name=sub['name'], url=sub['url']))
                 current_user.save()
                 if processLive:
-                    subprocess.Popen(['buildbot', 'reconfig'], cwd=os.path.join('/build', current_user.username)
+                    subprocess.Popen(['buildbot', 'reconfig'], cwd=os.path.join('/build', current_user.username))
                 else:
-                    subprocess.Popen(['buildbot', 'start'], cwd=os.path.join('/build', current_user.username)                    
+                    subprocess.Popen(['buildbot', 'start'], cwd=os.path.join('/build', current_user.username))                    
             else:
                 flash('URL is not valid.')
         else:
@@ -178,7 +178,7 @@ def force(builder):
     r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/builders', builder, 'force'))
     return(r)
 
-@app.route('/api/log/<str:builder>/<int:buildnumber>')
+@app.route('/api/log/<builder>/<int:buildnumber>')
 @login_required
 def log(buildnumber):
     port = sum([current_user.port_offset, 20000])
