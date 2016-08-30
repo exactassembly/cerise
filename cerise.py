@@ -77,11 +77,13 @@ def register():
 def account():
     form = ProjectForm()
     projects = current_user['projects']
-    try:
-        os.kill(current_user.pid, 0)
-        processLive = True
-    except OSError:
-        processLive = False
+    processLive = False
+    if current_user.pid:
+        try:
+            os.kill(current_user.pid, 0)
+            processLive = True
+        except OSError:
+            processLive = False
     if request.method == 'POST':
         if form.validate_on_submit():
             if not current_user.projects.filter(name=form.name.data):
