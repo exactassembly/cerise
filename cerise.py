@@ -201,9 +201,7 @@ def log(builder, buildnumber, step):
         else:
             with open(filename) as f:
                 while True:
-                    lines = f.readlines()
-                    for line in lines:
-                        yield line
+                    yield f.readlines()
                     sleep(.25)          
     return Response(logGenerator(), mimetype='text/event-stream')
 
