@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, flash
+from flask import Flask, request, render_template, redirect, url_for, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
 from models import *
