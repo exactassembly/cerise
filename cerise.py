@@ -20,9 +20,8 @@ def create_master(user):
     directory = os.path.join('/build', user.username)
     try:
         os.mkdir(directory)
-    except OSError as e:
-        if e[0] == 17:   # path exists
-            pass
+    except:
+        pass
     c = ConfigParser()
     c.read(os.path.join(os.getcwd(), 'conf/default.conf'))
     c.set('main', 'user', user.username)
