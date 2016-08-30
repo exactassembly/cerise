@@ -201,8 +201,12 @@ def log(builder, buildnumber, step):
         else:
             with open(filename) as f:
                 while True:
-                    yield [line for line in f.readlines()]
-                    sleep(.25)          
+                    lines = f.readlines()
+                    for line in lines:
+                        print('inneriteration')
+                        yield line
+                    sleep(.25) 
+                    print('outeriteration')         
     return Response(logGenerator(), mimetype='text/event-stream')
 
 @app.route('/logout', methods=['POST'])
