@@ -17,7 +17,7 @@ login_manager.init_app(app)
 ec2 = boto3.resource('ec2')
 
 def create_master(user):
-    directory = os.path.join('/build' + user.username)
+    directory = os.path.join('/build', user.username)
     try:
         os.mkdir(directory)
     except OSError as e:
