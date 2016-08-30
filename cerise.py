@@ -7,6 +7,7 @@ import os, boto3, subprocess, requests
 from configparser import ConfigParser
 from urllib.parse import urlparse
 from random import randint
+from time import sleep
 
 
 app = Flask(__name__)
@@ -165,9 +166,9 @@ def project():
 def masterLog():
     with open(os.path.join('/build', current_user.username, 'twistd.log')) as f:
         payload = f.readlines()[-100:]
-        def logGenerator():
-            for line in payload:
-                yield line
+    def logGenerator():
+        for line in payload:
+            yield line
     return Response(logGenerator(), mimetype='text/plain')
 
 @app.route('/api/builders/<path:path>', methods=['GET'])
@@ -184,16 +185,24 @@ def force(builder):
     r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/builders', builder, 'force'))
     return(r)
 
-@app.route('/api/log/<builder>/<int:buildnumber>')
+@app.route('/api/log/<builder>/<int:buildnumber>/<step>')
 @login_required
-def log(buildnumber):
+def log(builder, buildnumber, step):
     port = sum([current_user.port_offset, 20000])
-    j = requests.get(url.parse.urljoin('127.0.0.1', str(port), '/json/builders', builder, 'builds', buildnumber), params={'as_text' : '1'}).json()
-    payload = {}
-    for i in j['steps']:
-        r = requests.get(i['logs'][1])
-        payload[i['name']] = r
-    return render_template('log.html', payload=payload)
+    filePattern = buildnumber + '-log-' + step + '*'
+    filename = glob.glob(os.path.join('/build', current_user.username, builder, filePattern)[0]
+    def logGenerator():
+        if os.path.splitext(filename)[1] == '.bz2':
+            with bz2.BZ2File(filename) as f:
+                while True:
+                    yield f.readlines()
+                    sleep(.25)
+        else:
+            with open(filename) as f:
+                while True:
+                    yield f.readlines()
+                    sleep(.25)          
+    return Response(logGenerator(), mimetype='text/plain')
 
 @app.route('/logout', methods=['POST'])
 @login_required
