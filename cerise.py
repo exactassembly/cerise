@@ -78,6 +78,8 @@ def account():
     form = ProjectForm()
     projects = current_user['projects']
     processLive = False
+    if not current_user.aws:
+        return redirect(url_for(aws))
     if current_user.pid:
         try:
             os.kill(current_user.pid, 0)
@@ -202,11 +204,10 @@ def log(builder, buildnumber, step):
             with open(filename) as f:
                 while True:
                     lines = f.readlines()
-                    for line in lines:
-                        print('inneriteration')
-                        yield line
+                    if lines:
+                        for line in lines:
+                            yield line
                     sleep(.25) 
-                    print('outeriteration')         
     return Response(logGenerator(), mimetype='text/event-stream')
 
 @app.route('/logout', methods=['POST'])

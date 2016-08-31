@@ -18,6 +18,10 @@ class Project(db.EmbeddedDocument):
     sourcerepos = db.EmbeddedDocumentListField(Repo, max_length=25)
     steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
+class AWS(db.EmbeddedDocument):
+    keyID = db.StringField(max_length=255)
+    accessKey = db.StringField(max_length=255)
+
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
     email = db.StringField(max_length=255)
@@ -25,6 +29,7 @@ class User(db.Document, UserMixin):
     port_offset = db.IntField()
     active = db.BooleanField(default=True)
     projects = db.EmbeddedDocumentListField(Project, max_length=25)
+    aws = db.EmbeddedDocumentListField(AWS, max_length=1)
     pid = db.IntField()
 
 class LoginForm(Form):
@@ -72,3 +77,12 @@ class ProjectForm(Form):
         validators.DataRequired()])
     steps = FieldList(FormField(StepForm), min_entries=1, max_entries=25)
     subs = FieldList(FormField(SubForm), min_entries=0, max_entries=25)
+
+class AWSForm(Form):
+    keyID = StringField('project name', [
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()])
+    ])
+    accessKey = StringField('access key', [
+        validators.Length(max=255, message='length must be shorter than 255 characters'),
+        validators.DataRequired()])
