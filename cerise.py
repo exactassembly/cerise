@@ -187,29 +187,6 @@ def force(builder):
     r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/builders', builder, 'force'))
     return(r)
 
-@app.route('/api/log/<builder>/<int:buildnumber>/<step>')
-@login_required
-def log(builder, buildnumber, step):
-    port = sum([current_user.port_offset, 20000])
-    filePattern = str(buildnumber) + '-log-' + step + '*'
-    filename = glob.glob(os.path.join('/build', current_user.username, builder, filePattern))[0]
-    print(filename)
-    def logGenerator():
-        if os.path.splitext(filename)[1] == '.bz2':
-            with bz2.BZ2File(filename) as f:
-                while True:
-                    yield f.readlines()
-                    sleep(.25)
-        else:
-            with open(filename) as f:
-                while True:
-                    lines = f.readlines()
-                    if lines:
-                        for line in lines:
-                            yield line
-                    sleep(.25) 
-    return Response(logGenerator(), mimetype='text/event-stream')
-
 @app.route('/logout', methods=['POST'])
 @login_required
 def logout():
