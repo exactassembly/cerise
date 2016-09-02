@@ -11,6 +11,7 @@ class Step(db.EmbeddedDocument):
 class Repo(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
     url = db.StringField(max_length=255)
+    steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
 class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
@@ -67,6 +68,7 @@ class SubForm(wtForm):
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()
     ])
+    steps = FieldList(FormField(StepForm), min_entries=1, max_entries=25)    
 
 class ProjectForm(Form):
     name = StringField('project name', [

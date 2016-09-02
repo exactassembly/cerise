@@ -3,13 +3,14 @@
 <body>
 {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <ul class=flashes>
     {% for message in messages %}
-      <li>{{ message }}</li>
+        <div class="alert alet-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>error:</strong>{{ message }}
+        </div>
     {% endfor %}
-    </ul>
   {% endif %}
-{% endwith %}
+{% endwith %}   
  <form id=project action="/project" method="POST" class="projectForm">
     <h3>{{ project.name }}</h3>
     <input type="hidden" name="name" value="{{ project.name }}">
@@ -17,16 +18,16 @@
     <div id="sourceRepos">
       {% if project.sourcerepos %}
         {% for sub in project.sourcerepos %}
-          <input id="subs-{{ loop.index0 }}-name" name="subs-{{ loop.index0 }}-name" type="text" value="{{ sub.name }}">
-          <input id="subs-{{ loop.index0 }}-url" name="subs-{{ loop.index0 }}-url" type="text" value="{{ sub.url }}">
+          <input name="subs-{{ loop.index0 }}-name" type="text" value="{{ sub.name }}">
+          <input name="subs-{{ loop.index0 }}-url" type="text" value="{{ sub.url }}">
         {% endfor %}
       {% endif %}
     </div>
     <div id="steps">
     {% for step in project.steps %}
         <div>
-            <input id="steps-{{ loop.index0 }}-step" name="steps-{{ loop.index0 }}-step" type="text" value="{{ step.action }}">
-            <input id="steps-{{ loop.index0 }}-workdir" name="steps-{{ loop.index0 }}-workdir" type="text" value="{{ step.workdir }}"></div>
+            <input name="steps-{{ loop.index0 }}-step" type="text" value="{{ step.action }}">
+            <input name="steps-{{ loop.index0 }}-workdir" type="text" value="{{ step.workdir }}"></div>
         </div>
     {% endfor %}
     <button id="addStep" type="button">add step</button>
