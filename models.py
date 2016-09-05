@@ -8,15 +8,15 @@ class Step(db.EmbeddedDocument):
     action = db.StringField(max_length=255)
     workdir = db.StringField(max_length=255)
 
-class Repo(db.EmbeddedDocument):
+class SubProject(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
     url = db.StringField(max_length=255)
     steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
 class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
-    gitrepo = db.StringField(max_length=255)
-    sourcerepos = db.EmbeddedDocumentListField(Repo, max_length=25)
+    url = db.StringField(max_length=255)
+    subs = db.EmbeddedDocumentListField(SubProject, max_length=25)
     steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
 class AWS(db.EmbeddedDocument):
@@ -59,8 +59,8 @@ class StepForm(wtForm):
         validators.DataRequired()
     ])
 
-class SubForm(wtForm):
-    name = StringField('name', [
+class SubForm(Form):
+    subname = StringField('name', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()
     ])
@@ -74,11 +74,10 @@ class ProjectForm(Form):
     name = StringField('project name', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()])
-    gitrepo = StringField('git repo', [
+    url = StringField('git repo', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()])
     steps = FieldList(FormField(StepForm), min_entries=1, max_entries=25)
-    subs = FieldList(FormField(SubForm), min_entries=0, max_entries=25)
 
 class AWSForm(Form):
     keyID = StringField('project name', [

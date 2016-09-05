@@ -21,17 +21,23 @@
 {% endwith %}    
 </div>
 <form id="newProject" action="/account" method="POST" style="display: none">
-        <div>{{ form.name.label }}: {{ form.name }}</div>
-        <div>{{ form.gitrepo.label }}: {{ form.gitrepo }}</div>
-        <div id="steps">
-            <div>
-                <input id="steps-0-step" name="steps-0-step" type="text" placeholder="action">
-                <input id="steps-0-workdir" name="steps-0-workdir" type="text" placeholder="workdir">
-            </div>
+    {% if parent %}
+    <input type="hidden" name="parent" value="{{ parent.name }}">
+    <h3>add subproject to {{ parent.name }}</h3>
+    {% else %}
+    <h3>add project</h3>
+    {% endif %}
+    <div>{{ form.name.label }}: {{ form.name }}</div>
+    <div>{{ form.url.label }}: {{ form.url }}</div>
+    <div id="steps">
+        <div>
+            <input id="steps-0-step" name="steps-0-step" type="text" placeholder="action">
+            <input id="steps-0-workdir" name="steps-0-workdir" type="text" placeholder="workdir">
         </div>
-        <button id="addStep" type="button">add step</button>
-        {{ form.csrf_token }}
-        <input type="submit">
+    </div>
+    <button id="addStep" type="button">add step</button>
+    {{ form.csrf_token }}
+    <input type="submit">
 </form>
 <script type="text/javascript">
 $( "#addStep" ).click(function(){

@@ -9,17 +9,6 @@ $( "#addStep" ).click(function(){
     </div>')     
 });
 
-$( "#addRepo" ).click(function(){
-    var index = $( "#sourceRepos" ).children().length;
-    nameID = "subs-" + index + "-name"
-    urlID = "subs-" + index + "-url"
-    $( "#sourceRepos" ).append(
-    '<div>\
-        <input id="' + nameID + '" name="' + nameID + '" type="text" placeholder="name"></input>\
-        <input id="' + urlID + '" name="' + urlID + '" type="text" placeholder="url"></input>\
-    </div>')     
-});
-
 $( "#deleteProject" ).click(function(){
     $( "#deleteProject" ).replaceWith( '<button id="confirmDelete" type="button">i\'m sure!</button>' );
     $( "#confirmDelete" ).click(function(){

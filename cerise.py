@@ -31,6 +31,14 @@ def create_master(user):
     subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(directory, 'master.cfg')])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
 
+def flash_errors(formErrors):
+    for field, errors in formErrors:
+        for error in errors:
+            flash(u"Error in the %s field - %s" % (
+                getattr(form, field).label.text,
+                error
+            ))
+
 @login_manager.user_loader
 def load_user(id):
     try:
@@ -70,54 +78,74 @@ def register():
             user.save()
             login_user(user)
             create_master(user)
-            return redirect(url_for('account'))
+            return redirect(url_for('aws'))
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    form = ProjectForm()
     projects = current_user['projects']
     processLive = False
     if not current_user.aws:
-        return redirect(url_for(aws))
+        return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
     if current_user.pid:
         try:
             os.kill(current_user.pid, 0)
             processLive = True
         except OSError:
             processLive = False
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            if not current_user.projects.filter(name=form.name.data):
-                if urlparse(form.gitrepo.data).path:                
-                    newProject = Project(name=form.name.data)
-                    newProject.gitrepo = form.gitrepo.data
-                    newProject.steps = []
-                    directory = os.path.join('/build', current_user.username)
-                    for step in form.steps.data:
-                        newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-                    current_user.projects.append(newProject)
-                    current_user.save()
-                    if len(current_user.projects) > 1 and processLive: # reconfig
-                        subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
-                    else: # otherwise start buildbot first time
-                        p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
-                        current_user.pid = p.pid
-                        current_user.save()              
-                else:
-                    flash("URL is not valid.")
-            else:
-                flash("Project name already exists.")
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(u"Error in the %s field - %s" % (
-                        getattr(form, field).label.text,
-                        error
-                    ))
     return render_template('account.html', form=form, projects=projects, processLive=processLive)
 
-@app.route('/account/aws', methods=['GET'])
+@app.route('/account/add', methods=['GET', 'POST'])
+@login.required
+def add():
+    if request.method == 'POST':
+        if request.form.get('parent'):
+            form = SubForm()
+            if form.validate_on_submit():
+                if current_user.projects.filter(sub__name=form.name.data):
+                    flash("Project name already exists.")
+                    return
+                newProject = SubProject(name=form.name.data)
+            else:
+                flash_errors(form.errors.items())
+        else:
+            form = ProjectForm()
+            if form.validate_on_submit():   
+                if current_user.projects.filter(name=form.name.data):
+                    flash("Project name already exists.")
+                    return
+                newProject = Project(name=form.name.data)   
+            else:
+                flash_errors(form.errors.items())      
+        if urlparse(form.url.data).path:                
+            newProject.url = form.url.data
+            newProject.steps = []
+            directory = os.path.join('/build', current_user.username)
+            for step in form.steps.data:
+                newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+            if request.form.get('parent'):
+                current_user.projects.subs.append(newProject)                    
+            else:
+                current_user.projects.append(newProject)
+            current_user.save()
+            if len(current_user.projects) > 1 and processLive: # reconfig
+                subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
+            else: # otherwise start buildbot first time
+                p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
+                current_user.pid = p.pid
+                current_user.save()              
+        else:
+            flash("URL is not valid.")
+    if request.method == 'GET':
+        if request.args.get('parent'):
+            parent = current_user.projects.get(name=request.args.get('parent'))
+            form = SubForm()   
+            return render_template('new_project.html', form=form, parent=parent)
+        else:
+            form = ProjectForm()
+            return render_template('new_project.html', form=form)            
+
+@app.route('/account/aws', methods=['GET', 'POST'])
 @login_requred
 def aws():
     form = AWSForm()
@@ -126,6 +154,8 @@ def aws():
             awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
             current_user.aws = awsLogin
             current_user.save()
+            return redirect(url_for('account'))
+    return render_template('aws.html', form=form)
 
 @app.route('/project', methods=['GET', 'POST'])
 @login_required
@@ -141,22 +171,27 @@ def project():
     if request.method == 'GET':
         currentProject = request.args.get('name')
         project = current_user.projects.get(name=currentProject)
-        return render_template('project.html', project=project, form=form)
+        if request.args.get('sub'):
+            sub = parent.subs.get(name=request.form.get('sub'))
+        return render_template('project.html', project=project, sub=sub, form=form)
     if request.method == 'POST':
         if request.form.get('action') == 'delete':
-            project = User.objects(username=current_user.username).update_one(pull__projects__name=request.form.get('name'))
+            if request.form.get('sub'):
+                sub = User.objects(username=current_user.username).update_one(pull__projects__subs__name=request.form.get('name'))
+            else:
+                project = User.objects(username=current_user.username).update_one(pull__projects__name=request.form.get('name'))
             return redirect(url_for('account'))
         if form.validate_on_submit():
-            if urlparse(form.gitrepo.data).path:
-                project = current_user.projects.get(name=request.form.get('name'))
-                project.gitrepo = form.gitrepo.data
+            if urlparse(form.url.data).path:
+                if request.form.get('sub'):
+                    parent = current_user.projects.get(name=request.form.get('name'))
+                    project = parent.subs.get(name=request.form.get('sub'))
+                else:
+                    project = current_user.projects.get(name=request.form.get('name'))
+                project.url = form.url.data
                 project.steps = []
                 for step in form.steps.data:
                     project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-                if form.subs.data:
-                    project.sourcerepos = []
-                    for sub in form.subs.data:
-                        project['sourcerepos'].append(Repo(name=sub['name'], url=sub['url']))
                 current_user.save()
                 if processLive:
                     subprocess.Popen(['buildbot', 'reconfig'], cwd=os.path.join('/build', current_user.username))
@@ -165,12 +200,7 @@ def project():
             else:
                 flash('URL is not valid.')
         else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    flash(u"Error in the %s field - %s" % (
-                        getattr(form, field).label.text,
-                        error
-                    ))
+            flash_errors(form.errors.items())
         return redirect('/project?name=' + request.form.get('name'))
 
 @app.route('/account/masterlog', methods=['GET'])

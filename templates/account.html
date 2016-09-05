@@ -23,6 +23,7 @@
                 {% for sub in project.sourcerepos %}
                 <button class="list-group-item">{{ sub.name }}</button>
                 {% endfor %}
+                <button class="addSub" type="button">add project</button> 
             </div>
         {% else %}
         <button type="button" class="list-group-item">{{ project.name }}</button>

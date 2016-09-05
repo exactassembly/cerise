@@ -14,15 +14,11 @@
  <form id=project action="/project" method="POST" class="projectForm">
     <h3>{{ project.name }}</h3>
     <input type="hidden" name="name" value="{{ project.name }}">
+    {% if sub %}
+    <h3>{{ sub.name }}</h3>    
+    <input type="hidden" name="sub" value="{{ sub.name }}">
+    {% endif %}
     <div>{{ form.gitrepo.label }}: {{ form.gitrepo(value=project.gitrepo) }}</div>
-    <div id="sourceRepos">
-      {% if project.sourcerepos %}
-        {% for sub in project.sourcerepos %}
-          <input name="subs-{{ loop.index0 }}-name" type="text" value="{{ sub.name }}">
-          <input name="subs-{{ loop.index0 }}-url" type="text" value="{{ sub.url }}">
-        {% endfor %}
-      {% endif %}
-    </div>
     <div id="steps">
     {% for step in project.steps %}
         <div>
@@ -31,7 +27,6 @@
         </div>
     {% endfor %}
     <button id="addStep" type="button">add step</button>
-    <button id="addRepo" type="button">add source repo</button>
     {{ form.csrf_token }}
     <input type="submit">
 </form>
@@ -42,8 +37,8 @@
 <script src="/static/project.js" type="text/javascript"></script>
 <script src="/static/buildlight.js" type="text/javascript"></script>
 <script type="text/javascript">var thisProject = '{{ project.name }}'</script>
-{% if project.sourcerepos %}
-  <script type="text/javascript">var subProjects = '{{ project.sourcerepos|tojson|safe }}'</script>
+{% if project.subs %}
+  <script type="text/javascript">var subProjects = '{{ project.subs|tojson|safe }}'</script>
 {% endif %}
 </body>
 </html>
