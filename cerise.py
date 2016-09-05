@@ -117,6 +117,16 @@ def account():
                     ))
     return render_template('account.html', form=form, projects=projects, processLive=processLive)
 
+@app.route('/account/aws', methods=['GET'])
+@login_requred
+def aws():
+    form = AWSForm()
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
+            current_user.aws = awsLogin
+            current_user.save()
+
 @app.route('/project', methods=['GET', 'POST'])
 @login_required
 def project():

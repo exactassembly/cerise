@@ -30,7 +30,7 @@ class User(db.Document, UserMixin):
     port_offset = db.IntField()
     active = db.BooleanField(default=True)
     projects = db.EmbeddedDocumentListField(Project, max_length=25)
-    aws = db.EmbeddedDocumentListField(AWS, max_length=1)
+    aws = db.EmbeddedDocumentField(AWS)
     pid = db.IntField()
 
 class LoginForm(Form):
