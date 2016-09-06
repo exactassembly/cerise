@@ -39,6 +39,18 @@ def flash_errors(formErrors):
                 error
             ))
 
+def verifyAWS(awsID, awsKey):
+    client = boto3.client(
+        'iam',
+        aws_access_key_id=ID,
+        aws_secret_access_key=awsKey
+    )
+    try:
+        client.get_user()
+        return True
+    except ClientError:
+        return False
+
 @login_manager.user_loader
 def load_user(id):
     try:
@@ -151,10 +163,13 @@ def aws():
     form = AWSForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
-            current_user.aws = awsLogin
-            current_user.save()
-            return redirect(url_for('account'))
+            if verifyAWS(form.keyID.data, form.accessKey.data):
+                awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
+                current_user.aws = awsLogin
+                current_user.save()
+                return redirect(url_for('account'))
+            else:
+                flash('aws credentials not valid.')
     return render_template('aws.html', form=form)
 
 @app.route('/project', methods=['GET', 'POST'])

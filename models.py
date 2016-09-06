@@ -39,14 +39,17 @@ class LoginForm(Form):
 
 class RegisterForm(Form):
     username = StringField('username', [
-        validators.Length(min=4, max=25, message='length must be > 6 and < 25')
+        validators.Length(min=4, max=25, message='length must be > 6 and < 25'),
+        validators.Regexp('^\w+$', message='letters, numbers, and underscores only')
     ])
     email = StringField('email', [
         validators.Length(min=4, max=50, message='length must be > 4 and < 50'),
-        validators.Email(message='must be valid email address')])
+        validators.Email(message='must be valid email address')
+    ])
     password = PasswordField('password', [
         validators.Length(min=6, max=25, message='length must be > 6 and < 25'), 
-        validators.EqualTo('confirm', message='passwords must match')])
+        validators.EqualTo('confirm', message='passwords must match'),
+    ])
     confirm = PasswordField('retype password')
 
 class StepForm(wtForm):
@@ -73,17 +76,20 @@ class SubForm(Form):
 class ProjectForm(Form):
     name = StringField('project name', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
-        validators.DataRequired()])
+        validators.DataRequired()
+    ])
     url = StringField('git repo', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
-        validators.DataRequired()])
+        validators.DataRequired()
+    ])
     steps = FieldList(FormField(StepForm), min_entries=1, max_entries=25)
 
 class AWSForm(Form):
     keyID = StringField('project name', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
-        validators.DataRequired()])
+        validators.DataRequired()
     ])
     accessKey = StringField('access key', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
-        validators.DataRequired()])
+        validators.DataRequired()
+    ])
