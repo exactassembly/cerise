@@ -28,7 +28,7 @@ function createTable(){
                 var buildNumber = thisBuild.number
                 buildsContext[keys[i]].push(buildNumber); // buildsContext is now a collection of builds for user's current view
                 if (thisBuild.error == 'undefined') { // if thisBuild isn't errored.  thisBuild will return an error with fewer than 5 builds
-                    $('#' + keys[i]).append('<td id="build' + buildNumber + '"><a href="/api/log/' + thisBuild + '/' buildNumber + '">' + thisBuild.text[1] + '</a></td>');
+                    $('#' + keys[i]).append('<td id="build' + buildNumber + '"><a href="/api/log/' + thisBuild + '/' + buildNumber + '">' + thisBuild.text[1] + '</a></td>');
                 }
             }
             $('#build-light').append('</tr>');
