@@ -9,8 +9,8 @@ from random import randint
 from time import sleep
 import os, boto3, subprocess, requests
 
-from models import *
-from helpers import *
+from .models import *
+from .helpers import *
 
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
@@ -76,7 +76,7 @@ def account():
     return render_template('account.html', form=form, projects=projects, processLive=processLive)
 
 @app.route('/account/add', methods=['GET', 'POST'])
-@login.required
+@login_required
 def add():
     if request.method == 'POST':
         if request.form.get('parent'):

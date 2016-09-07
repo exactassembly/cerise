@@ -1,9 +1,6 @@
 <!doctype html>
 <html>
 <head>
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -16,14 +13,16 @@
 {% endif %}
 <div id="menu">
     <div class="panel list-group">
+        <button type="button" class="list-group-item">buildlight</button>
     {% for project in projects %}
-        {% if project.sourcerepos.length > 0 %}
-            <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu"> 
+        {% if project.subs.length > 0 %}
+            <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu">{{ project.name }}<span class="caret"></span></button>
             <div class="panel-collapse collapse in" role="tabpanel" id="{{ project.name }}-sub">
-                {% for sub in project.sourcerepos %}
-                <button class="list-group-item">{{ sub.name }}</button>
+                <button class="project-btn list-group-item" project="{{ project.name }}">main</button>
+                {% for sub in project.subs %}
+                <button class="project-btn list-group-item" project="{{ project.name }}" subProj="{{ sub }}">{{ sub.name }}</button>
                 {% endfor %}
-                <button class="addSub" type="button">add project</button> 
+                <button class="addSub" parent="{{ project.name }}" type="button">add project</button> 
             </div>
         {% else %}
         <button type="button" class="list-group-item">{{ project.name }}</button>
@@ -32,7 +31,9 @@
         <button id="addProject" type="button">add project</button>
     </div>
 </div>
+<div id="main">
+</div>
 <script>var user = '{{ user }}';</script>
-<script src="/static/account.js" type="text/javascript"></script>
+<script src="/static/js/account.js" type="text/javascript"></script>
 </body>
 </html>
