@@ -6,11 +6,21 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <body>
-{% if processLive %}
-    <div id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></div>
-{% elif not processLive %}
-    <div id="masterStatus">master status: stopped <a href="/account/masterlog">[log]</a></div>
-{% endif %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+        {% if processLive %}
+            <li id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></li>
+        {% elif not processLive %}
+            <li id="masterStatus">master status: stopped <a href="/account/masterlog">[log]</a></li>
+        {% endif %}
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/account/profile">profile</a></li>
+            <a href="/logout" class="btn btn-alert">logout</a>
+        </ul>
+    </div>
+</nav>
 <div id="menu">
     <div class="panel list-group">
         <button type="button" class="list-group-item">buildlight</button>

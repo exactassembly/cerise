@@ -1,24 +1,62 @@
 <!DOCTYPE html>
 <html>
+<head>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
 <body>
 <div id="login" style="display: inline-block; padding-right: 25px; border-right: thin solid; height: 150px">
     <div>login</div>
-    <form method="POST" action="/login">
-        <div>{{ form.username.label }}: {{ form.username }}</div>
-        <div>{{ form.password.label }}: {{ form.password }}</div>
+    <form class="form-horizontal" method="POST" action="/login">
+        <div class="form-group">
+            <label for="usernameInput" class="col-sm-2 control-label">{{ form.username.label }}</label>
+            <div class="col-sm-8">
+                {{ form.username(class="form-control", id="usernameInput", placeholder="username") }}
+            </div>
+        </div>
+        <div class="form-group">   
+            <label for="passwordInput" class="col-sm-2 control-label">{{ form.password.label }}</label>     
+            <div class="col-sm-8">
+                {{ form.password(class="form-control", id="passwordInput", placeholder="password") }}
+            </div>
+        </div>
         {{ form.csrf_token }}
         <input type="submit" value="submit">
     </form>
 </div>
 <div id="register" style="display: inline-block; padding-left: 25px; vertical-align: top">
     <div>register</div>
-    <form method="POST" action="/register">
-        <div>{{ rForm.email.label }}: {{ rForm.email }}</div>
-        <div>{{ rForm.username.label }}: {{ rForm.username }}</div>
-        <div>{{ rForm.password.label }}: {{ rForm.password }}</div>
-        <div>{{ rForm.confirm.label }}: {{ rForm.confirm }}</div>
+    <form class="form-horizontal" method="POST" action="/register">
+        <div class="form-group">   
+            <label for="rEmailInput" class="col-sm-2 control-label">{{ rForm.email.label }}</label>     
+            <div class="col-sm-8">
+                {{ rForm.email(class="form-control", id="rEmailInput", placeholder="email") }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="rUsernameInput" class="col-sm-2 control-label">{{ rForm.username.label }}</label>
+            <div class="col-sm-8">
+                {{ rForm.username(class="form-control", id="rUsernameInput", placeholder="username") }}
+            </div>
+        </div>
+        <div class="form-group">   
+            <label for="rPasswordInput" class="col-sm-2 control-label">{{ rForm.password.label }}</label>     
+            <div class="col-sm-8">
+                {{ rForm.password(class="form-control", id="rPasswordInput", placeholder="password") }}
+            </div>
+        </div>
+        <div class="form-group">   
+            <label for="confirmInput" class="col-sm-2 control-label">{{ form.rConfirm.label }}</label>     
+            <div class="col-sm-8">
+                {{ rForm.confirm(class="form-control", id="confirmInput", placeholder="confirm") }}
+            </div>
+        </div>
         {{ rForm.csrf_token }}
-        <input type="submit" value="submit">
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">submit</button>
+            </div>
+        </div>
     </form>
 </div>
 <p>
