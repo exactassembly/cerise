@@ -96,44 +96,35 @@ def add():
         if request.form.get('parent'):
             form = SubForm()
             if form.validate_on_submit():
-                if current_user.projects(sub__name=form.name.data) or current_user.group.projects(sub__name=form.name.data):
+                if checkExists(form.name.data, parent=request.form.get('parent')):
                     flash("Project name already exists.")
                     return
-                if request.form.get('')
-                newProject = SubProject(name=form.name.data)
+                else:
+                    if request.form.get('group'):
+                        addProject(form, parent=request.form.get('parent'), group=request.form.get('group'))                    
+                    else:
+                        addProject(form, parent)
             else:
                 flash_errors(form.errors.items())
         else:
             form = ProjectForm()
             if form.validate_on_submit():   
-                if current_user.projects(name=form.name.data) or current_user.group.projects(name=form.name.data):
+                if checkExists(form.name.data):
                     flash("Project name already exists.")
                     return
-                newProject = Project(name=form.name.data)   
+                else:
+                    if request.form.get('group'):
+                        addProject(form, group=request.form.get('group'))                    
+                    else:
+                        addProject(form) 
             else:
                 flash_errors(form.errors.items())      
-        if urlparse(form.url.data).path:                
-            newProject.url = form.url.data
-            newProject.steps = []
-            directory = os.path.join('/build', current_user.username)
-            for step in form.steps.data:
-                newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-            if request.form.get('parent'):
-                current_user.projects.subs.append(newProject)                    
-            else:
-                current_user.projects.append(newProject)
-            current_user.save()
-            if len(current_user.projects) > 1 and processLive: # reconfig
-                subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
-            else: # otherwise start buildbot first time
-                p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
-                current_user.pid = p.pid
-                current_user.save()              
-        else:
-            flash("URL is not valid.")
     elif request.method == 'GET':
         if request.args.get('parent'):
-            parent = current_user.projects.get(name=request.args.get('parent'))
+            if request.form.get('group'):
+                parent = current_user.group.projects.get(name=request.args.get('parent'))
+            else:
+                parent = current_user.projects.get(name=request.args.get('parent'))
             form = SubForm()   
             return render_template('new_project.html', form=form, parent=parent)
         else:
@@ -167,10 +158,9 @@ def project():
         except OSError:
             processLive = False
     if request.method == 'GET':
-        currentProject = request.args.get('name')
-        project = current_user.projects.get(name=currentProject)
+        project = current_user.projects.get(id=request.args.get('id'))
         if request.args.get('sub'):
-            sub = parent.subs.get(name=request.form.get('sub'))
+            sub = project.subs.get(id=request.args.get('sub'))
         return render_template('project.html', project=project, sub=sub, form=form)
     elif request.method == 'POST':
         if request.form.get('action') == 'delete':
