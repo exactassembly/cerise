@@ -13,7 +13,7 @@ class SubProject(db.EmbeddedDocument):
     url = db.StringField(max_length=255)
     steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
-class Project(db.EmbeddedDocument):
+class Project(db.Document):
     name = db.StringField(max_length=255)
     url = db.StringField(max_length=255)
     subs = db.EmbeddedDocumentListField(SubProject, max_length=25)
@@ -23,15 +23,18 @@ class AWS(db.EmbeddedDocument):
     keyID = db.StringField(max_length=255)
     accessKey = db.StringField(max_length=255)
 
+class Group(db.Document):
+    port_offset = db.IntField()
+    aws = db.EmbeddedDocumentField(AWS)
+    pid = db.IntField()
+    projects = db.ListField(db.ReferenceField(Project))
+
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
     email = db.StringField(max_length=255)
     password = db.StringField(max_length=255)
-    port_offset = db.IntField()
     active = db.BooleanField(default=True)
-    projects = db.EmbeddedDocumentListField(Project, max_length=25)
-    aws = db.EmbeddedDocumentField(AWS)
-    pid = db.IntField()
+    group = db.ReferenceField(Group)
 
 class LoginForm(Form):
     username = StringField('username', [validators.DataRequired()])

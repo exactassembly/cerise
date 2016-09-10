@@ -70,7 +70,7 @@ def login():
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
-    if not User.objects.filter(username=form.username.data):
+    if not User.objects(username=form.username.data):
         if form.validate_on_submit():
             user = User(username=form.username.data, email=form.email.data)
             user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
@@ -83,7 +83,8 @@ def register():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    projects = current_user['projects']
+    projects = current_user.projects
+    groupProjects = current_user.group.projects
     processLive = False
     if not current_user.aws:
         return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
@@ -93,7 +94,7 @@ def account():
             processLive = True
         except OSError:
             processLive = False
-    return render_template('account.html', form=form, projects=projects, processLive=processLive)
+    return render_template('account.html', form=form, projects=projects, groupProjects=groupProjects, processLive=processLive)
 
 @app.route('/account/add', methods=['GET', 'POST'])
 @login.required
@@ -102,16 +103,17 @@ def add():
         if request.form.get('parent'):
             form = SubForm()
             if form.validate_on_submit():
-                if current_user.projects.filter(sub__name=form.name.data):
+                if current_user.projects(sub__name=form.name.data) or current_user.group.projects(sub__name=form.name.data):
                     flash("Project name already exists.")
                     return
+                if request.form.get('')
                 newProject = SubProject(name=form.name.data)
             else:
                 flash_errors(form.errors.items())
         else:
             form = ProjectForm()
             if form.validate_on_submit():   
-                if current_user.projects.filter(name=form.name.data):
+                if current_user.projects(name=form.name.data) or current_user.group.projects(name=form.name.data):
                     flash("Project name already exists.")
                     return
                 newProject = Project(name=form.name.data)   
