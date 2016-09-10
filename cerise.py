@@ -1,14 +1,16 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
-from models import *
+
 from werkzeug.security import generate_password_hash, check_password_hash
-import os, boto3, subprocess, requests
 from configparser import ConfigParser
 from urllib.parse import urlparse
 from random import randint
 from time import sleep
-import glob
+import os, boto3, subprocess, requests
+
+from .models import *
+from .helpers import *
 
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
@@ -16,28 +18,6 @@ db = MongoEngine(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 ec2 = boto3.resource('ec2')
-
-def create_master(user):
-    directory = os.path.join('/build', user.username)
-    try:
-        os.mkdir(directory)
-    except:
-        pass
-    c = ConfigParser()
-    c.read(os.path.join(os.getcwd(), 'conf/default.conf'))
-    c.set('main', 'user', user.username)
-    with open(directory + '/user.conf', 'w') as f:
-        c.write(f)
-    subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(directory, 'master.cfg')])
-    subprocess.call(['buildbot', 'create-master'], cwd=directory)
-
-def flash_errors(formErrors):
-    for field, errors in formErrors:
-        for error in errors:
-            flash(u"Error in the %s field - %s" % (
-                getattr(form, field).label.text,
-                error
-            ))
 
 @login_manager.user_loader
 def load_user(id):
@@ -60,7 +40,7 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     if request.method == 'POST' and form.validate_on_submit():
-        user = User.objects.get(username=form.username.data)
+        user = User.objects.get(username__iexact=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
             user.authenticated = True
             login_user(user)
@@ -96,8 +76,21 @@ def account():
             processLive = False
     return render_template('account.html', form=form, projects=projects, groupProjects=groupProjects, processLive=processLive)
 
+@app.route('/account/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    user = (current_user['username'], current_user['email'])
+    if request.method == 'POST':
+        if request.form.get('username'):
+            current_user['username'] = request.form.get('username')
+        if request.form.get('email'):
+            current_user['email'] = request.form.get('email')
+        if request.form.get('password'):
+            current_user['password'] = request.form.get('password')            
+    return render_template('profile.html', user=user)
+
 @app.route('/account/add', methods=['GET', 'POST'])
-@login.required
+@login_required
 def add():
     if request.method == 'POST':
         if request.form.get('parent'):
@@ -138,7 +131,7 @@ def add():
                 current_user.save()              
         else:
             flash("URL is not valid.")
-    if request.method == 'GET':
+    elif request.method == 'GET':
         if request.args.get('parent'):
             parent = current_user.projects.get(name=request.args.get('parent'))
             form = SubForm()   
@@ -153,10 +146,13 @@ def aws():
     form = AWSForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
-            current_user.aws = awsLogin
-            current_user.save()
-            return redirect(url_for('account'))
+            if verifyAWS(form.keyID.data, form.accessKey.data):
+                awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
+                current_user.aws = awsLogin
+                current_user.save()
+                return redirect(url_for('account'))
+            else:
+                flash('aws credentials not valid.')
     return render_template('aws.html', form=form)
 
 @app.route('/project', methods=['GET', 'POST'])
@@ -176,7 +172,7 @@ def project():
         if request.args.get('sub'):
             sub = parent.subs.get(name=request.form.get('sub'))
         return render_template('project.html', project=project, sub=sub, form=form)
-    if request.method == 'POST':
+    elif request.method == 'POST':
         if request.form.get('action') == 'delete':
             if request.form.get('sub'):
                 sub = User.objects(username=current_user.username).update_one(pull__projects__subs__name=request.form.get('name'))
