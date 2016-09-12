@@ -24,6 +24,7 @@ class AWS(db.EmbeddedDocument):
     accessKey = db.StringField(max_length=255)
 
 class Group(db.Document):
+    name = db.StringField(max_length=50)
     port_offset = db.IntField()
     aws = db.EmbeddedDocumentField(AWS)
     pid = db.IntField()
@@ -35,6 +36,9 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
     group = db.ReferenceField(Group)
+    port_offset = db.IntField()
+    aws = db.EmbeddedDocumentField(AWS)
+    pid = db.IntField()
 
 class LoginForm(Form):
     username = StringField('username', [validators.DataRequired()])
