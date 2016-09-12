@@ -132,7 +132,7 @@ def add():
             return render_template('new_project.html', form=form)            
 
 @app.route('/account/aws', methods=['GET', 'POST'])
-@login_requred
+@login_required
 def aws():
     form = AWSForm()
     if request.method == 'POST':
