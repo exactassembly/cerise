@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, Response
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
+from flask_debugtoolbar import DebugToolbarExtension
 
 from werkzeug.security import generate_password_hash, check_password_hash
 from configparser import ConfigParser
@@ -54,27 +55,23 @@ def register():
         if form.validate_on_submit():
             user = User(username=form.username.data, email=form.email.data)
             user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
-            user.port_offset = randint(1, 2000)
+            group = Group(name=form.username.data)
+            group.port_offset = randint(1, 2000)
+            group.save()
+            user.groups.append(group)
             user.save()
             login_user(user)
-            create_master(user)
+            create_master(group)
             return redirect(url_for('aws'))
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    projects = current_user.projects
-    groupProjects = current_user.group.projects
+    groups = [{groupID: x.id, projects: x.projects}] for x in current_user.groups]
     processLive = False
     if not current_user.aws:
         return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
-    if current_user.pid:
-        try:
-            os.kill(current_user.pid, 0)
-            processLive = True
-        except OSError:
-            processLive = False
-    return render_template('account.html', form=form, projects=projects, groupProjects=groupProjects, processLive=processLive)
+    return render_template('account.html', form=form, groups=groups)
 
 @app.route('/account/profile', methods=['GET', 'POST'])
 @login_required
@@ -96,29 +93,22 @@ def add():
         if request.form.get('parent'):
             form = SubForm()
             if form.validate_on_submit():
-                if checkExists(form.name.data, parent=request.form.get('parent')):
-                    flash("Project name already exists.")
-                    return
-                else:
-                    if request.form.get('group'):
-                        addProject(form, parent=request.form.get('parent'), group=request.form.get('group'))                    
-                    else:
-                        addProject(form, parent)
+                try:
+                    addProject(group=request.form.get('group'), parent=request.form.get('parent')) 
+                except ValueError as e:
+                    flash(e)                   
             else:
                 flash_errors(form.errors.items())
         else:
             form = ProjectForm()
             if form.validate_on_submit():   
-                if checkExists(form.name.data):
-                    flash("Project name already exists.")
-                    return
-                else:
-                    if request.form.get('group'):
-                        addProject(form, group=request.form.get('group'))                    
-                    else:
-                        addProject(form) 
+                try:
+                    addProject(group=request.form.get('group')) 
+                except ValueError as e:
+                    flash(e)
             else:
-                flash_errors(form.errors.items())      
+                flash_errors(form.errors.items())    
+        return render_template('new_project.html', form=form)  
     elif request.method == 'GET':
         if request.args.get('parent'):
             if request.form.get('group'):

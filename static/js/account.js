@@ -13,9 +13,9 @@ $( ".project-btn" ).click(function(){
     var project = $(this).attr('project');
     var sub = $(this).attr('subProj');
     if (sub){
-        $( "div #main" ).html('<iframe src="/project?currentProject=' + project + '&sub=' + sub + '></iframe>');
+        $( "div #main" ).html('<iframe src="/project?group=' + group + 'id=' + project + '&sub=' + sub + '></iframe>');
     }
     else {
-        $( "div #main" ).html('<iframe src="/project?currentProject=' + project + '></iframe>');
+        $( "div #main" ).html('<iframe src="/project?group=' + group + 'id=' + project + '></iframe>');
     }
 });

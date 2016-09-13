@@ -22,21 +22,25 @@
     </div>
 </nav>
 <div id="menu">
-    <div class="panel list-group">
-        <button type="button" class="list-group-item">buildlight</button>
-    {% for project in projects %}
-        {% if project.subs.length > 0 %}
-            <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu">{{ project.name }}<span class="caret"></span></button>
-            <div class="panel-collapse collapse in" role="tabpanel" id="{{ project.name }}-sub">
-                <button class="project-btn list-group-item" project="{{ project.name }}">main</button>
-                {% for sub in project.subs %}
-                <button class="project-btn list-group-item" project="{{ project.name }}" subProj="{{ sub }}">{{ sub.name }}</button>
-                {% endfor %}
-                <button class="addSub" parent="{{ project.name }}" type="button">add project</button> 
-            </div>
-        {% else %}
-        <button type="button" class="list-group-item">{{ project.name }}</button>
-        {% endif %}
+
+    <button type="button" class="list-group-item">buildlight</button>
+    {% for group in groups %}
+    <div class="panel list-group">  
+        <div class="panel-heading">{{ group }}</div>             
+        {% for project in group['projects']' %}
+            {% if project.subs.length > 0 %}
+                <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu">{{ project.name }}<span class="caret"></span></button>
+                <div class="panel-collapse collapse in" role="tabpanel" id="{{ project.name }}-sub">
+                    <button class="project-btn list-group-item" group="{{ group['groupID'] }}" project="{{ project.id }}">main</button>
+                    {% for sub in project.subs %}
+                    <button class="project-btn list-group-item" group="{{ group['groupID'] }}" project="{{ project.id }}" subProj="{{ sub.name }}">{{ sub.name }}</button>
+                    {% endfor %}
+                    <button class="addSub" group="{{ group['groupID'] }}" parent="{{ project.id }}" type="button">add project</button> 
+                </div>
+            {% else %}
+            <button type="button" class="list-group-item">{{ project.name }}</button>
+            {% endif %}
+        {% endfor %}
     {% endfor %}
         <button id="addProject" type="button">add project</button>
     </div>

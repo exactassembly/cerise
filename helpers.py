@@ -1,13 +1,15 @@
-def create_master(user):
-    directory = os.path.join('/build', user.username)
+from bson.objectid import ObjectId
+
+def create_master(group):
+    directory = os.path.join('/build', '_'.join(group.name.split()))
     try:
         os.mkdir(directory)
     except:
         pass
     c = ConfigParser()
     c.read(os.path.join(os.getcwd(), 'conf/default.conf'))
-    c.set('main', 'user', user.username)
-    with open(directory + '/user.conf', 'w') as f:
+    c.set('main', 'group', group.id)
+    with open(directory + '/group.conf', 'w') as f:
         c.write(f)
     subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(directory, 'master.cfg')])
     subprocess.call(['buildbot', 'create-master'], cwd=directory)
@@ -33,20 +35,24 @@ def verifyAWS(awsID, awsKey):
         return False
 
 def checkExists(projName, parent=None):
-if group:
     if parent:
-        if current_user.group.projects.subs.get(projName) > 0:
+        if g.projects.subs.get(projName) > 0:
             return True
         else:
             return False
     else:
-        if current_user.group.projects.get(projName) > 0:
+        if g.projects.get(projName) > 0:
             return True
         else:
             return False
-else:
 
-def addProject(form, parent=None, group=None):
+def addProject(group, parent=None):
+    if ObjectId(current_user.id) in Group.objects.get(id=group):
+        g = Group.objects.get(id=group)
+    else:
+        raise ValueError('User does not have access to group.')
+    if checkExists(projName=form.name.data, parent):
+        raise ValueError('Project name already exists.')
     if parent:
         newProject = SubProject(name=form.name.data)
     else:
@@ -55,30 +61,15 @@ def addProject(form, parent=None, group=None):
     newProject.steps = []
     for step in form.steps.data:
         newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-    newProject.save()
-    if group:
-        if parent:
-            current_user.group.projects.get(id=parent).subs.append(newProject)                    
-        else:
-            current_user.group.projects.append(newProject)
-        current_user.group.save() 
-        directory = os.path.join('/build', '_'.join(current_user.group.name.split()))
-        if len(current_user.group.projects) > 0 and processLive: # reconfig
-            subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
-        else: # otherwise start buildbot first time
-            p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
-            current_user.group.pid = p.pid
-            current_user.group.save()           
+    if parent:
+        g.projects.get(name=parent).subs.append(newProject)                    
     else:
-        if parent:
-            current_user.projects.get(id=parent).subs.append(newProject)                    
-        else:
-            current_user.projects.append(newProject)    
-        current_user.save()
-        directory = os.path.join('/build', current_user.username)
-        if len(current_user.projects) > 0 and processLive: # reconfig
-            subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
-        else: # otherwise start buildbot first time
-            p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
-            current_user.pid = p.pid
-            current_user.save()
+        g.projects.append(newProject)
+    g.save() 
+    directory = os.path.join('/build', '_'.join(g.name.split()))
+    if len(g.projects) > 0 and processLive: # reconfig
+        subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
+    else: # otherwise start buildbot first time
+        p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
+        g.pid = p.pid
+        g.save()           

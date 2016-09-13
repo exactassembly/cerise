@@ -28,17 +28,15 @@ class Group(db.Document):
     port_offset = db.IntField()
     aws = db.EmbeddedDocumentField(AWS)
     pid = db.IntField()
-    projects = db.ListField(db.ReferenceField(Project))
+    projects = db.EmbeddedDocumentListField(Project, max_length=50)
+    users = db.ListField(db.ReferenceField('User'), max_length=100)
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
     email = db.StringField(max_length=255)
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
-    group = db.ReferenceField(Group)
-    port_offset = db.IntField()
-    aws = db.EmbeddedDocumentField(AWS)
-    pid = db.IntField()
+    groups = db.ListField(db.ReferenceField(Group), max_length=25)
 
 class LoginForm(Form):
     username = StringField('username', [validators.DataRequired()])
