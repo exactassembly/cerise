@@ -67,7 +67,7 @@ def register():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    groups = [{groupID: x.id, projects: x.projects}] for x in current_user.groups]
+    groups = [[{groupID: x.id, projects: x.projects}] for x in current_user.groups]
     processLive = False
     if not current_user.aws:
         return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
