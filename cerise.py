@@ -6,6 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from werkzeug.security import generate_password_hash, check_password_hash
 from configparser import ConfigParser
 from urllib.parse import urlparse
+from urllib.request import unquote
 from random import randint
 from time import sleep
 import os, boto3, subprocess, requests
@@ -68,7 +69,6 @@ def register():
 @login_required
 def account():
     groups = [[{groupID: x.id, projects: x.projects}] for x in current_user.groups]
-    processLive = False
     if not current_user.aws:
         return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
     return render_template('account.html', form=form, groups=groups)
@@ -83,7 +83,8 @@ def profile():
         if request.form.get('email'):
             current_user['email'] = request.form.get('email')
         if request.form.get('password'):
-            current_user['password'] = request.form.get('password')            
+            current_user['password'] = request.form.get('password')  
+        current_user.save()          
     return render_template('profile.html', user=user)
 
 @app.route('/account/add', methods=['GET', 'POST'])
@@ -94,7 +95,7 @@ def add():
             form = SubForm()
             if form.validate_on_submit():
                 try:
-                    addProject(group=request.form.get('group'), parent=request.form.get('parent')) 
+                    add_project(group=request.form.get('group'), parent=request.form.get('parent')) 
                 except ValueError as e:
                     flash(e)                   
             else:
@@ -103,7 +104,7 @@ def add():
             form = ProjectForm()
             if form.validate_on_submit():   
                 try:
-                    addProject(group=request.form.get('group')) 
+                    add_project(group=request.form.get('group')) 
                 except ValueError as e:
                     flash(e)
             else:
@@ -127,7 +128,7 @@ def aws():
     form = AWSForm()
     if request.method == 'POST':
         if form.validate_on_submit():
-            if verifyAWS(form.keyID.data, form.accessKey.data):
+            if verify_aws(form.keyID.data, form.accessKey.data):
                 awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
                 current_user.aws = awsLogin
                 current_user.save()
@@ -140,32 +141,27 @@ def aws():
 @login_required
 def project():
     form = ProjectForm()
-    processLive = False
-    if current_user.pid:
-        try:
-            os.kill(current_user.pid, 0)
-            processLive = True
-        except OSError:
-            processLive = False
     if request.method == 'GET':
-        project = current_user.projects.get(id=request.args.get('id'))
+        try:
+            project = get_project(request.args.get('id'), unquote(request.args.get('group')))
+        except ValueError as e:
+            flash(e)
         if request.args.get('sub'):
-            sub = project.subs.get(id=request.args.get('sub'))
+            sub = project.subs.get(id=unquote(request.args.get('sub')))
         return render_template('project.html', project=project, sub=sub, form=form)
     elif request.method == 'POST':
         if request.form.get('action') == 'delete':
             if request.form.get('sub'):
-                sub = User.objects(username=current_user.username).update_one(pull__projects__subs__name=request.form.get('name'))
+                delete_project(request.form.get('id'), request.form.get('group'), request.form.get('sub'))
             else:
-                project = User.objects(username=current_user.username).update_one(pull__projects__name=request.form.get('name'))
+                delete_project(request.form.get('id'), request.form.get('group'))
             return redirect(url_for('account'))
         if form.validate_on_submit():
             if urlparse(form.url.data).path:
                 if request.form.get('sub'):
-                    parent = current_user.projects.get(name=request.form.get('name'))
-                    project = parent.subs.get(name=request.form.get('sub'))
+                    update_project(request.form.get('id'), request.form.get('group'), request.form.get('sub'))
                 else:
-                    project = current_user.projects.get(name=request.form.get('name'))
+                    update_project(request.form.get('id'), request.form.get('group'))
                 project.url = form.url.data
                 project.steps = []
                 for step in form.steps.data:

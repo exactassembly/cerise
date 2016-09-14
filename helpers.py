@@ -22,7 +22,7 @@ def flash_errors(formErrors):
                 error
             ))
 
-def verifyAWS(awsID, awsKey):
+def verify_aws(awsID, awsKey):
     client = boto3.client(
         'iam',
         aws_access_key_id=ID,
@@ -34,7 +34,7 @@ def verifyAWS(awsID, awsKey):
     except ClientError:
         return False
 
-def checkExists(projName, parent=None):
+def check_exists(projName, parent=None):
     if parent:
         if g.projects.subs.get(projName) > 0:
             return True
@@ -46,12 +46,22 @@ def checkExists(projName, parent=None):
         else:
             return False
 
-def addProject(group, parent=None):
-    if ObjectId(current_user.id) in Group.objects.get(id=group):
-        g = Group.objects.get(id=group)
+def process_live(pid):
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+def load_group(user, group):
+    if ObjectId(user) in Group.objects.get(id=group):
+        return Group.objects.get(id=group)
     else:
         raise ValueError('User does not have access to group.')
-    if checkExists(projName=form.name.data, parent):
+
+def add_project(group, parent=None):
+    g = load_group(current_user.id, group)
+    if check_exists(projName=form.name.data, parent):
         raise ValueError('Project name already exists.')
     if parent:
         newProject = SubProject(name=form.name.data)
@@ -67,9 +77,26 @@ def addProject(group, parent=None):
         g.projects.append(newProject)
     g.save() 
     directory = os.path.join('/build', '_'.join(g.name.split()))
-    if len(g.projects) > 0 and processLive: # reconfig
+    if len(g.projects) > 0 and process_live(g.pid): # reconfig
         subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
     else: # otherwise start buildbot first time
         p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
         g.pid = p.pid
         g.save()           
+
+def get_project(id, group):
+    g = load_group(current_user.id, group)
+    p = g.projects.get(id=id)
+    return p   
+
+def update_project(group, parent=None):
+
+def delete_project(id, group, sub=None):
+    g = load_group(current_user.id, group)
+    p = g.projects.get(id=id)
+    if sub:
+        p.update(pull__subs__id=sub)
+        p.save()
+    else:
+        g.update(pull__projects=p)
+        g.save()
