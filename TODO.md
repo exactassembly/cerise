@@ -4,11 +4,11 @@
 
 * lots of testing with how ref and list queries work
 
-##* use IDs for all updates
-
 ##* implement permissions for projects
 
-* construct account pages with (id, name) tuples from list comprehensions
+* implement UX for group creation, offering choice between individual and group account
+
+parent.update(pull__subs__id=ObjectId("57d9a9a0c8b9162ff00f7ab6"))
 
 POST schema:
 

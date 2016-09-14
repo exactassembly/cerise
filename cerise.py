@@ -56,14 +56,17 @@ def register():
         if form.validate_on_submit():
             user = User(username=form.username.data, email=form.email.data)
             user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
-            group = Group(name=form.username.data)
-            group.port_offset = randint(1, 2000)
-            group.save()
-            user.groups.append(group)
             user.save()
             login_user(user)
-            create_master(group)
-            return redirect(url_for('aws'))
+            return redirect(url_for('define'))
+
+@app.route('/account/define', methods=['GET', 'POST'])
+def define():
+    group = Group(name=current_user.username)
+    group.port_offset = randint(1, 2000)
+    group.save()
+    user.groups.append(group)
+    create_master(group)
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
@@ -162,15 +165,6 @@ def project():
                     update_project(request.form.get('id'), request.form.get('group'), request.form.get('sub'))
                 else:
                     update_project(request.form.get('id'), request.form.get('group'))
-                project.url = form.url.data
-                project.steps = []
-                for step in form.steps.data:
-                    project['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-                current_user.save()
-                if processLive:
-                    subprocess.Popen(['buildbot', 'reconfig'], cwd=os.path.join('/build', current_user.username))
-                else:
-                    subprocess.Popen(['buildbot', 'start'], cwd=os.path.join('/build', current_user.username))                    
             else:
                 flash('URL is not valid.')
         else:

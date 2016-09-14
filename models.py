@@ -14,7 +14,7 @@ class SubProject(db.EmbeddedDocument):
     url = db.StringField(max_length=255)
     steps = db.EmbeddedDocumentListField(Step, max_length=25)
 
-class Project(db.Document):
+class Project(db.EmbeddedDocument):
     name = db.StringField(max_length=255)
     url = db.StringField(max_length=255)
     subs = db.EmbeddedDocumentListField(SubProject, max_length=25)

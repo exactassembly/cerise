@@ -89,14 +89,29 @@ def get_project(id, group):
     p = g.projects.get(id=id)
     return p   
 
-def update_project(group, parent=None):
+def update_project(id, group, sub=None):
+    g = load_group(current_user.id, group)
+    p = g.projects.get(id=id)
+    if sub:
+        p = p.subs.get(id=sub)
+    p.url = form.url.data
+    p.steps = []
+    for step in form.steps.data:
+        p['steps'].append(Step(action=step['step'], workdir=step['workdir']))
+    g.save()
+    directory = os.path.join('/build', '_'.join(g.name.split()))    
+    if processLive:
+        subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)
+    else:
+        subprocess.Popen(['buildbot', 'start'], cwd=directory)                    
 
 def delete_project(id, group, sub=None):
     g = load_group(current_user.id, group)
     p = g.projects.get(id=id)
     if sub:
         p.update(pull__subs__id=sub)
-        p.save()
     else:
         g.update(pull__projects=p)
-        g.save()
+    g.save()
+
+def 
