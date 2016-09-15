@@ -31,6 +31,7 @@ class Group(db.Document):
     pid = db.IntField()
     projects = db.EmbeddedDocumentListField(Project, max_length=50)
     users = db.ListField(db.ReferenceField('User'), max_length=100)
+    referrals = db.ListField(db.StringField(), max_length=25)
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
@@ -38,6 +39,7 @@ class User(db.Document, UserMixin):
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
     groups = db.ListField(db.ReferenceField(Group), max_length=25)
+    self_group = db.ReferenceField(Group)
 
 class LoginForm(Form):
     username = StringField('username', [validators.DataRequired()])

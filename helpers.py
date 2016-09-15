@@ -54,13 +54,15 @@ def process_live(pid):
         return False
 
 def load_group(user, group):
-    if ObjectId(user) in Group.objects.get(id=group):
+    if user.self_group.id == group:
+        return user.self_group
+    elif ObjectId(user.id) in Group.objects.get(id=group):
         return Group.objects.get(id=group)
     else:
         raise ValueError('User does not have access to group.')
 
 def add_project(group, parent=None):
-    g = load_group(current_user.id, group)
+    g = load_group(current_user, group)
     if check_exists(projName=form.name.data, parent):
         raise ValueError('Project name already exists.')
     if parent:
@@ -85,12 +87,12 @@ def add_project(group, parent=None):
         g.save()           
 
 def get_project(id, group):
-    g = load_group(current_user.id, group)
+    g = load_group(current_user, group)
     p = g.projects.get(id=id)
     return p   
 
 def update_project(id, group, sub=None):
-    g = load_group(current_user.id, group)
+    g = load_group(current_user, group)
     p = g.projects.get(id=id)
     if sub:
         p = p.subs.get(id=sub)
@@ -106,7 +108,7 @@ def update_project(id, group, sub=None):
         subprocess.Popen(['buildbot', 'start'], cwd=directory)                    
 
 def delete_project(id, group, sub=None):
-    g = load_group(current_user.id, group)
+    g = load_group(current_user, group)
     p = g.projects.get(id=id)
     if sub:
         p.update(pull__subs__id=sub)
@@ -114,4 +116,28 @@ def delete_project(id, group, sub=None):
         g.update(pull__projects=p)
     g.save()
 
-def 
+def register_user(form):
+    user = User(username=form.username.data, email=form.email.data)
+    user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
+    if form.group.data and form.ref.data:
+        add_to_group(user, form.group.data, form.ref.data)
+    else:
+        group = Group(name=current_user.username)
+        group.port_offset = randint(1, 2000)
+        group.save()        
+        user.self_group = group
+        user.save()
+        group.users.append(user)
+        group.save()
+        user.save()
+        create_master(group)
+
+def add_to_group(user, group, ref):
+    group = Group.objects.get(id=group)
+    if ref in group.referrals:
+        user.groups.append(group)
+        user.save()
+        group.users.append(user)
+        group.save()
+    else:
+        raise ValueError('Referral not valid.')

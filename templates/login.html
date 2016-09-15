@@ -21,6 +21,8 @@
             </div>
         </div>
         {{ form.csrf_token }}
+        <input type="hidden" name="group" value="{{ group['id'] }}">
+        <input type="hidden" name="ref" value="{{ group['ref'] }}">                
         <input type="submit" value="submit">
     </form>
 </div>
@@ -46,12 +48,14 @@
             </div>
         </div>
         <div class="form-group">   
-            <label for="confirmInput" class="col-sm-2 control-label">{{ form.rConfirm.label }}</label>     
+            <label for="confirmInput" class="col-sm-2 control-label">{{ rForm.confirm.label }}</label>     
             <div class="col-sm-8">
                 {{ rForm.confirm(class="form-control", id="confirmInput", placeholder="confirm") }}
             </div>
         </div>
         {{ rForm.csrf_token }}
+        <input type="hidden" name="group" value="{{ group['id'] }}">
+        <input type="hidden" name="ref" value="{{ group['ref'] }}">        
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default">submit</button>
@@ -63,6 +67,15 @@
     {% if form.errors %}
     <ul class=errors>
     {% for error in form.errors %}
+      <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+</p>
+<p>
+    {% if rForm.errors %}
+    <ul class=errors>
+    {% for error in rForm.errors %}
       <li>{{ error }}</li>
     {% endfor %}
     </ul>

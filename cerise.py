@@ -39,41 +39,45 @@ def index():
 def login():
     form = LoginForm()
     rForm = RegisterForm()
+    group = {'id': request.args.get('group'), 'ref': request.args.get('ref')}
     if current_user.is_authenticated:
+        if group['id'] and group.['ref']:
+            try:
+                add_to_group(current_user, group['id'], group['ref'])
+            except ValueError as e:
+                return(e)
         return redirect(url_for('index'))
     if request.method == 'POST' and form.validate_on_submit():
         user = User.objects.get(username__iexact=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
+            if group['id'] and group.['ref']
+                try:
+                    add_to_group(current_user, group['id'], group['ref'])
+                except ValueError as e:
+                    return(e)
             user.authenticated = True
             login_user(user)
             return redirect(url_for('index'))
-    return render_template('login.html', title='login', form=form, rForm=rForm)
+    return render_template('login.html', title='login', form=form, rForm=rForm, group=group)
 
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
     if not User.objects(username=form.username.data):
         if form.validate_on_submit():
-            user = User(username=form.username.data, email=form.email.data)
-            user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
-            user.save()
+            register_user(form)
             login_user(user)
             return redirect(url_for('define'))
-
-@app.route('/account/define', methods=['GET', 'POST'])
-def define():
-    group = Group(name=current_user.username)
-    group.port_offset = randint(1, 2000)
-    group.save()
-    user.groups.append(group)
-    create_master(group)
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
     groups = [[{groupID: x.id, projects: x.projects}] for x in current_user.groups]
-    if not current_user.aws:
-        return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
+    if self_group:
+        if not current_user.self_group.aws:
+            return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
+        else:
+            groups.append(self_group)
     return render_template('account.html', form=form, groups=groups)
 
 @app.route('/account/profile', methods=['GET', 'POST'])
