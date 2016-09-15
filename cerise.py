@@ -206,10 +206,10 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    for user in User.objects:
-        directory = os.path.join('/build', user.username)
-        if len(user.projects) > 0:
+    for group in Group.objects:
+        directory = os.path.join('/build', '_'.join(group.name.split()))
+        if len(group.projects) > 0:
             p = subprocess.Popen(['buildbot', 'start'], cwd=directory)
-            user.pid = p.pid
-            user.save()
+            group.pid = p.pid
+            group.save()
     app.run(host='0.0.0.0')

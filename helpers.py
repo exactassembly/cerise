@@ -36,12 +36,12 @@ def verify_aws(awsID, awsKey):
 
 def check_exists(projName, parent=None):
     if parent:
-        if g.projects.subs.get(projName) > 0:
+        if group.projects.subs.get(projName) > 0:
             return True
         else:
             return False
     else:
-        if g.projects.get(projName) > 0:
+        if group.projects.get(projName) > 0:
             return True
         else:
             return False
@@ -62,7 +62,7 @@ def load_group(user, group):
         raise ValueError('User does not have access to group.')
 
 def add_project(group, parent=None):
-    g = load_group(current_user, group)
+    group = load_group(current_user, group)
     if check_exists(projName=form.name.data, parent):
         raise ValueError('Project name already exists.')
     if parent:
@@ -74,47 +74,47 @@ def add_project(group, parent=None):
     for step in form.steps.data:
         newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
     if parent:
-        g.projects.get(name=parent).subs.append(newProject)                    
+        group.projects.get(name=parent).subs.append(newProject)                    
     else:
-        g.projects.append(newProject)
-    g.save() 
-    directory = os.path.join('/build', '_'.join(g.name.split()))
-    if len(g.projects) > 0 and process_live(g.pid): # reconfig
+        group.projects.append(newProject)
+    group.save() 
+    directory = os.path.join('/build', '_'.join(group.name.split()))
+    if len(group.projects) > 0 and process_live(group.pid): # reconfig
         subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
     else: # otherwise start buildbot first time
         p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
-        g.pid = p.pid
-        g.save()           
+        group.pid = p.pid
+        group.save()           
 
 def get_project(id, group):
-    g = load_group(current_user, group)
-    p = g.projects.get(id=id)
-    return p   
+    group = load_group(current_user, group)
+    project = group.projects.get(id=id)
+    return project 
 
 def update_project(id, group, sub=None):
-    g = load_group(current_user, group)
-    p = g.projects.get(id=id)
+    group = load_group(current_user, group)
+    project = group.projects.get(id=id)
     if sub:
-        p = p.subs.get(id=sub)
-    p.url = form.url.data
-    p.steps = []
+        project = project.subs.get(id=sub)
+    project.url = form.url.data
+    project.steps = []
     for step in form.steps.data:
         p['steps'].append(Step(action=step['step'], workdir=step['workdir']))
-    g.save()
-    directory = os.path.join('/build', '_'.join(g.name.split()))    
+    group.save()
+    directory = os.path.join('/build', '_'.join(group.name.split()))    
     if processLive:
         subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)
     else:
         subprocess.Popen(['buildbot', 'start'], cwd=directory)                    
 
 def delete_project(id, group, sub=None):
-    g = load_group(current_user, group)
-    p = g.projects.get(id=id)
+    group = load_group(current_user, group)
+    project = group.projects.get(id=id)
     if sub:
-        p.update(pull__subs__id=sub)
+        project.update(pull__subs__id=sub)
     else:
-        g.update(pull__projects=p)
-    g.save()
+        group.update(pull__projects=p)
+    group.save()
 
 def register_user(form):
     user = User(username=form.username.data, email=form.email.data)
