@@ -24,6 +24,24 @@ class AWS(db.EmbeddedDocument):
     keyID = db.StringField(max_length=255)
     accessKey = db.StringField(max_length=255)
 
+class Referrals(db.EmbeddedDocument):
+    key = db.StringField()
+    created = DateTimeField(default=datetime.now)
+    meta = {
+        'indexes': [
+            {'fields': ['created'], 'expireAfterSeconds': 86400}
+        ]
+    }
+
+class Token(db.Document):
+    token = db.StringField()
+    created = DateTimeField(default=datetime.now)
+    meta = {
+        'indexes': [
+            {'fields': ['created'], 'expireAfterSeconds': 86400}
+        ]
+    }
+
 class Group(db.Document):
     name = db.StringField(max_length=50)
     port_offset = db.IntField()
@@ -31,7 +49,7 @@ class Group(db.Document):
     pid = db.IntField()
     projects = db.EmbeddedDocumentListField(Project, max_length=50)
     users = db.ListField(db.ReferenceField('User'), max_length=100)
-    referrals = db.ListField(db.StringField(), max_length=25)
+    referrals = db.EmbeddedDocumentListField(max_length=100)
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)

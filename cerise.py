@@ -85,6 +85,9 @@ def account():
 def profile():
     user = (current_user['username'], current_user['email'])
     if request.method == 'POST':
+        if request.form.get('action') == 'refer':
+            generate_referral(request.form.get('group'))
+            return redirect(url_for('profile'))
         if request.form.get('username'):
             current_user['username'] = request.form.get('username')
         if request.form.get('email'):

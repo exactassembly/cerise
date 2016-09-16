@@ -1,4 +1,5 @@
 from bson.objectid import ObjectId
+from secrets import token_urlsafe
 
 def create_master(group):
     directory = os.path.join('/build', '_'.join(group.name.split()))
@@ -119,9 +120,14 @@ def delete_project(id, group, sub=None):
 def register_user(form):
     user = User(username=form.username.data, email=form.email.data)
     user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
-    if form.group.data and form.ref.data:
+    if form.type.data == 'ref' and form.group.data and form.ref.data:
+        user.type = 'unpaid'
         add_to_group(user, form.group.data, form.ref.data)
     else:
+        if form.type.data == 'group':
+            user.type = 'group'
+        elif form.type.data == 'individual'
+            user.type = 'individual'
         group = Group(name=current_user.username)
         group.port_offset = randint(1, 2000)
         group.save()        
@@ -141,3 +147,19 @@ def add_to_group(user, group, ref):
         group.save()
     else:
         raise ValueError('Referral not valid.')
+
+def generate_referral(user, group):
+    group = load_group(user, group)
+    group.referrals.append(key=token_urlsafe(16))
+    Token(token=token_urlsafe(16)).save()
+
+def validate_referral(group, key, token)
+    if Token.objects.get(token=token):
+        Token.objects.get(token=token).delete()
+        group = Group.objects.get(id=group)
+        if group.referrals.get(key=key):
+            return True
+        else:
+            return False
+    else:
+        return False
