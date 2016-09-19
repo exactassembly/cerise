@@ -1,5 +1,5 @@
 from bson.objectid import ObjectId
-from secrets import token_urlsafe
+from uuid import uuid4
 
 def create_master(group):
     directory = os.path.join('/build', '_'.join(group.name.split()))
@@ -64,7 +64,7 @@ def load_group(user, group):
 
 def add_project(group, parent=None):
     group = load_group(current_user, group)
-    if check_exists(projName=form.name.data, parent):
+    if check_exists(form.name.data, parent):
         raise ValueError('Project name already exists.')
     if parent:
         newProject = SubProject(name=form.name.data)
@@ -126,7 +126,7 @@ def register_user(form):
     else:
         if form.type.data == 'group':
             user.type = 'group'
-        elif form.type.data == 'individual'
+        elif form.type.data == 'individual':
             user.type = 'individual'
         group = Group(name=current_user.username)
         group.port_offset = randint(1, 2000)
@@ -150,10 +150,10 @@ def add_to_group(user, group, ref):
 
 def generate_referral(user, group):
     group = load_group(user, group)
-    group.referrals.append(key=token_urlsafe(16))
-    Token(token=token_urlsafe(16)).save()
+    group.referrals.append(key=uuid4().hex)
+    Token(token=uuid4().hex).save()
 
-def validate_referral(group, key, token)
+def validate_referral(group, key, token):
     if Token.objects.get(token=token):
         Token.objects.get(token=token).delete()
         group = Group.objects.get(id=group)

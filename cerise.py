@@ -11,8 +11,8 @@ from random import randint
 from time import sleep
 import os, boto3, subprocess, requests
 
-from .models import *
-from .helpers import *
+from models import *
+from helpers import *
 
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
@@ -41,7 +41,7 @@ def login():
     rForm = RegisterForm()
     group = {'id': request.args.get('group'), 'ref': request.args.get('ref')}
     if current_user.is_authenticated:
-        if group['id'] and group.['ref']:
+        if group['id'] and group['ref']:
             try:
                 add_to_group(current_user, group['id'], group['ref'])
             except ValueError as e:
@@ -50,7 +50,7 @@ def login():
     if request.method == 'POST' and form.validate_on_submit():
         user = User.objects.get(username__iexact=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
-            if group['id'] and group.['ref']
+            if group['id'] and group['ref']:
                 try:
                     add_to_group(current_user, group['id'], group['ref'])
                 except ValueError as e:

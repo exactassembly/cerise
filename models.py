@@ -1,8 +1,9 @@
-from .cerise import db
+from cerise import db
 from flask_login import UserMixin
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, validators, FieldList, FormField
 from wtforms import Form as wtForm
+from datetime import datetime
 
 class Step(db.EmbeddedDocument):
     action = db.StringField(max_length=255)
@@ -24,9 +25,9 @@ class AWS(db.EmbeddedDocument):
     keyID = db.StringField(max_length=255)
     accessKey = db.StringField(max_length=255)
 
-class Referrals(db.EmbeddedDocument):
+class Referral(db.EmbeddedDocument):
     key = db.StringField()
-    created = DateTimeField(default=datetime.now)
+    created = db.DateTimeField(default=datetime.now())
     meta = {
         'indexes': [
             {'fields': ['created'], 'expireAfterSeconds': 86400}
@@ -35,7 +36,7 @@ class Referrals(db.EmbeddedDocument):
 
 class Token(db.Document):
     token = db.StringField()
-    created = DateTimeField(default=datetime.now)
+    created = db.DateTimeField(default=datetime.now())
     meta = {
         'indexes': [
             {'fields': ['created'], 'expireAfterSeconds': 86400}
@@ -49,7 +50,7 @@ class Group(db.Document):
     pid = db.IntField()
     projects = db.EmbeddedDocumentListField(Project, max_length=50)
     users = db.ListField(db.ReferenceField('User'), max_length=100)
-    referrals = db.EmbeddedDocumentListField(max_length=100)
+    referrals = db.EmbeddedDocumentListField(Referral, max_length=100)
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
