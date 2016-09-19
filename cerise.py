@@ -67,7 +67,7 @@ def register():
         if form.validate_on_submit():
             register_user(form)
             login_user(user)
-            return redirect(url_for('define'))
+            return redirect(url_for('account'))
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
