@@ -9,15 +9,15 @@
     <div>login</div>
     <form class="form-horizontal" method="POST" action="/login">
         <div class="form-group">
-            <label for="usernameInput" class="col-sm-3 control-label">{{ form.username.label }}</label>
+            {{ form.username.label(class="col-sm-3 control-label") }}
             <div class="col-sm-9">
-                {{ form.username(class="form-control", id="usernameInput", placeholder="username") }}
+                {{ form.username(class="form-control", placeholder="username") }}
             </div>
         </div>
         <div class="form-group">   
-            <label for="passwordInput" class="col-sm-3 control-label">{{ form.password.label }}</label>     
+            {{ form.password.label(class="col-sm-3 control-label") }}              
             <div class="col-sm-9">
-                {{ form.password(class="form-control", id="passwordInput", placeholder="password") }}
+                {{ form.password(class="form-control", placeholder="password") }}
             </div>
         </div>
         {{ form.csrf_token }}
@@ -30,27 +30,27 @@
     <div>register</div>
     <form class="form-horizontal" method="POST" action="/register">
         <div class="form-group">   
-            <label for="rEmailInput" class="col-sm-3 control-label">{{ rForm.email.label }}</label>     
+            {{ rForm.email.label(class="col-sm-3 control-label") }}    
             <div class="col-sm-9">
-                {{ rForm.email(class="form-control", id="rEmailInput", placeholder="email") }}
+                {{ rForm.email(class="form-control", placeholder="email") }}
             </div>
         </div>
         <div class="form-group">
-            <label for="rUsernameInput" class="col-sm-3 control-label">{{ rForm.username.label }}</label>
+            {{ rForm.username.label(class="col-sm-3 control-label") }}            
             <div class="col-sm-9">
-                {{ rForm.username(class="form-control", id="rUsernameInput", placeholder="username") }}
+                {{ rForm.username(class="form-control", placeholder="username") }}
             </div>
         </div>
         <div class="form-group">   
-            <label for="rPasswordInput" class="col-sm-3 control-label">{{ rForm.password.label }}</label>     
+            {{ rForm.password.label(class="col-sm-3 control-label") }}                
             <div class="col-sm-9">
-                {{ rForm.password(class="form-control", id="rPasswordInput", placeholder="password") }}
+                {{ rForm.password(class="form-control", placeholder="password") }}
             </div>
         </div>
         <div class="form-group">   
-            <label for="confirmInput" class="col-sm-3 control-label">{{ rForm.confirm.label }}</label>     
+            {{ rForm.confirm.label(class="col-sm-3 control-label") }}                
             <div class="col-sm-9">
-                {{ rForm.confirm(class="form-control", id="confirmInput", placeholder="confirm") }}
+                {{ rForm.confirm(class="form-control", placeholder="confirm") }}
             </div>
         </div>
         {{ rForm.csrf_token }}
