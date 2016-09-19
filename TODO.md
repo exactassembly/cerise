@@ -3,6 +3,10 @@
 
 * transaction tokens
 
+* user refer unpaid user
+* decide whether group-paid state exists on user or group, ui for deleting users from group, subscription state tracking
+* finish restructuring, imports
+
 ##backburn:
 
 * implement permissions for projects

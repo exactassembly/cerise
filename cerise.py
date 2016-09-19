@@ -39,33 +39,37 @@ def index():
 def login():
     form = LoginForm()
     rForm = RegisterForm()
-    group = {'id': request.args.get('group'), 'ref': request.args.get('ref')}
+    ref = {'group': request.args.get('group'), 'ref': request.args.get('key'), 'token': request.args.get('token') }
     if current_user.is_authenticated:
-        if group['id'] and group['ref']:
+        if ref['group'] and ref['key'] and ref['token']:
             try:
-                add_to_group(current_user, group['id'], group['ref'])
+                consume_token(ref['token'])
+                group = load_group(ref['group'])
+                group.add_to_group(current_user)
             except ValueError as e:
                 return(e)
         return redirect(url_for('index'))
     if request.method == 'POST' and form.validate_on_submit():
         user = User.objects.get(username__iexact=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
-            if group['id'] and group['ref']:
+            if form.group.data and form.ref.data:
                 try:
-                    add_to_group(current_user, group['id'], group['ref'])
+                    consume_token(ref['token'])
+                    group = load_group(ref['group'])
+                    group.add_to_group(current_user)
                 except ValueError as e:
                     return(e)
             user.authenticated = True
             login_user(user)
             return redirect(url_for('index'))
-    return render_template('login.html', title='login', form=form, rForm=rForm, group=group)
+    return render_template('login.html', title='login', form=form, rForm=rForm, ref=ref)
 
 @app.route('/register', methods=['POST'])
 def register():
     form = RegisterForm()
     if not User.objects(username=form.username.data):
         if form.validate_on_submit():
-            register_user(form)
+            register_user()
             login_user(user)
             return redirect(url_for('account'))
 
@@ -85,27 +89,19 @@ def account():
 def profile():
     user = (current_user['username'], current_user['email'])
     if request.method == 'POST':
-        if request.form.get('action') == 'refer':
-            generate_referral(request.form.get('group'))
-            return redirect(url_for('profile'))
-        if request.form.get('username'):
-            current_user['username'] = request.form.get('username')
-        if request.form.get('email'):
-            current_user['email'] = request.form.get('email')
-        if request.form.get('password'):
-            current_user['password'] = request.form.get('password')  
-        current_user.save()          
+        current_user.update_user()       
     return render_template('profile.html', user=user)
 
 @app.route('/account/add', methods=['GET', 'POST'])
 @login_required
 def add():
     if request.method == 'POST':
+        group = load_group(request.form.get('group'))        
         if request.form.get('parent'):
             form = SubForm()
             if form.validate_on_submit():
                 try:
-                    add_project(group=request.form.get('group'), parent=request.form.get('parent')) 
+                    group.add_project(parent=request.form.get('parent')) 
                 except ValueError as e:
                     flash(e)                   
             else:
@@ -114,7 +110,7 @@ def add():
             form = ProjectForm()
             if form.validate_on_submit():   
                 try:
-                    add_project(group=request.form.get('group')) 
+                    group.add_project() 
                 except ValueError as e:
                     flash(e)
             else:
@@ -123,7 +119,8 @@ def add():
     elif request.method == 'GET':
         if request.args.get('parent'):
             if request.form.get('group'):
-                parent = current_user.group.projects.get(name=request.args.get('parent'))
+                group = load_group(request.args.get('group'))                        
+                parent = group.projects.get(name=request.args.get('parent'))
             else:
                 parent = current_user.projects.get(name=request.args.get('parent'))
             form = SubForm()   
@@ -152,26 +149,28 @@ def aws():
 def project():
     form = ProjectForm()
     if request.method == 'GET':
+        group = load_group(request.args.get('group'))        
         try:
-            project = get_project(request.args.get('id'), unquote(request.args.get('group')))
+            project = group.get_project(request.args.get('project'))
         except ValueError as e:
             flash(e)
         if request.args.get('sub'):
-            sub = project.subs.get(id=unquote(request.args.get('sub')))
+            sub = project.subs.get(id=request.args.get('sub'))
         return render_template('project.html', project=project, sub=sub, form=form)
     elif request.method == 'POST':
+        group = load_group(request.form.get('group'))                
         if request.form.get('action') == 'delete':
             if request.form.get('sub'):
-                delete_project(request.form.get('id'), request.form.get('group'), request.form.get('sub'))
+                group.delete_project(request.form.get('project'), request.form.get('sub'))
             else:
-                delete_project(request.form.get('id'), request.form.get('group'))
+                group.delete_project(request.form.get('project'))
             return redirect(url_for('account'))
         if form.validate_on_submit():
             if urlparse(form.url.data).path:
                 if request.form.get('sub'):
-                    update_project(request.form.get('id'), request.form.get('group'), request.form.get('sub'))
+                    group.update_project(request.form.get('project'), request.form.get('sub'))
                 else:
-                    update_project(request.form.get('id'), request.form.get('group'))
+                    group.update_project(request.form.get('project'))
             else:
                 flash('URL is not valid.')
         else:
