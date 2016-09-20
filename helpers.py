@@ -1,5 +1,7 @@
 from bson.objectid import ObjectId
 from uuid import uuid4
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 def flash_errors(formErrors):
     for field, errors in formErrors:
@@ -37,7 +39,6 @@ def register_user(form):
         add_to_group(user, form.group.data, form.ref.data)
     else:
         group = Group(name=current_user.username)
-        group.port_offset = randint(1, 2000)
         group.save()        
         user.self_group = group
         user.save()

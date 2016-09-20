@@ -1,3 +1,7 @@
+from flask_wtf import Form
+from wtforms import StringField, PasswordField, validators, FieldList, FormField
+from wtforms import Form as wtForm
+
 class StepForm(wtForm):
     step = StringField('build step', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),

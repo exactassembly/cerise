@@ -1,3 +1,5 @@
+from cerise import db
+
 class Step(db.EmbeddedDocument):
     action = db.StringField(max_length=255)
     workdir = db.StringField(max_length=255)

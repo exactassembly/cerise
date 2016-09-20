@@ -1,3 +1,6 @@
+from flask_login import UserMixin
+from cerise import db
+
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
     email = db.StringField(max_length=255)

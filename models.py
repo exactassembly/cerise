@@ -1,9 +1,8 @@
-from cerise import db
-from flask_login import UserMixin
-from flask_wtf import Form
-from wtforms import StringField, PasswordField, validators, FieldList, FormField
-from wtforms import Form as wtForm
 from datetime import datetime
+
+from user.models import *
+from project.models import *
+from group.models import *
 
 class Token(db.Document):
     token = db.StringField()

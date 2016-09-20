@@ -1,3 +1,9 @@
+import os, subprocess
+
+from cerise import db
+from configparser import ConfigParser
+
+
 class AWS(db.EmbeddedDocument):
     keyID = db.StringField(max_length=255)
     accessKey = db.StringField(max_length=255)
@@ -13,7 +19,7 @@ class Referral(db.EmbeddedDocument):
 
 class Group(db.Document):
     name = db.StringField(max_length=50)
-    port_offset = db.IntField()
+    port_offset = db.IntField(default=randint(1, 2000))
     aws = db.EmbeddedDocumentField(AWS)
     pid = db.IntField()
     projects = db.EmbeddedDocumentListField(Project, max_length=50)

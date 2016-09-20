@@ -2,21 +2,15 @@ from flask import Flask, request, render_template, redirect, url_for, flash, Res
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
 from flask_debugtoolbar import DebugToolbarExtension
-
-from werkzeug.security import generate_password_hash, check_password_hash
-from configparser import ConfigParser
-from urllib.parse import urlparse
-from urllib.request import unquote
-from random import randint
-from time import sleep
 import os, boto3, subprocess, requests
 
 from models import *
+from forms import *
 from helpers import *
 
 app = Flask(__name__)
 app.config.from_envvar('CERISE_CONFIG')
-db = MongoEngine(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 ec2 = boto3.resource('ec2')
