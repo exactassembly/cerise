@@ -31,11 +31,11 @@
             {% if project.subs.length > 0 %}
                 <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu">{{ project.name }}<span class="caret"></span></button>
                 <div class="panel-collapse collapse in" role="tabpanel" id="{{ project.name }}-sub">
-                    <button class="project-btn list-group-item" group="{{ group['groupID'] }}" project="{{ project.id }}">main</button>
+                    <button class="project-btn list-group-item" group="{{ group['id'] }}" project="{{ project.id }}">main</button>
                     {% for sub in project.subs %}
-                    <button class="project-btn list-group-item" group="{{ group['groupID'] }}" project="{{ project.id }}" subProj="{{ sub.name }}">{{ sub.name }}</button>
+                    <button class="project-btn list-group-item" group="{{ group['id'] }}" project="{{ project.id }}" subProj="{{ sub.name }}">{{ sub.name }}</button>
                     {% endfor %}
-                    <button class="addSub" group="{{ group['groupID'] }}" parent="{{ project.id }}" type="button">add project</button> 
+                    <button class="addSub" group="{{ group['id'] }}" parent="{{ project.id }}" type="button">add project</button> 
                 </div>
             {% else %}
             <button type="button" class="list-group-item">{{ project.name }}</button>

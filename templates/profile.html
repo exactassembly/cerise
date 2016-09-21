@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+<head>    
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+<div id="account" style="display: inline-block; padding-left: 25px; vertical-align: top">
+    <form class="form-horizontal" method="POST" action="/account/profile">
+        <div class="form-group">   
+            {{ rForm.email.label(class="col-sm-3 control-label") }}    
+            <div class="col-sm-9">
+                {{ rForm.email(class="form-control", value=user['email']) }}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ rForm.username.label(class="col-sm-3 control-label") }}            
+            <div class="col-sm-9">
+                {{ rForm.username(class="form-control", value=user['username']) }}
+            </div>
+        </div>
+        <div class="form-group">   
+            {{ rForm.password.label(class="col-sm-3 control-label") }}                
+            <div class="col-sm-9">
+                {{ rForm.password(class="form-control", placeholder="password") }}
+            </div>
+        </div>
+        <div class="form-group">   
+            {{ rForm.confirm.label(class="col-sm-3 control-label") }}                
+            <div class="col-sm-9">
+                {{ rForm.confirm(class="form-control", placeholder="confirm") }}
+            </div>
+        </div>
+        {{ rForm.csrf_token }}
+        <input type="hidden" name="group" value="{{ ref['id'] }}">
+        <input type="hidden" name="key" value="{{ ref['key'] }}">        
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">submit</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div id=groups>
+    {% for group in groups %}
+    <div>
+        <input type="text" class="inviteField" name="{{ group['id'] }}" value="{{ group['name'] }}" readonly>
+        <button type="button" class="invite" id="{{ group['id'] }}">invite</button>
+    </div>
+    {% endfor %}
+</div>
+<script type="text/javascript">
+    $(".invite").click(function(){
+        var id = $(this).attr("id")
+        $.post("/account/refer", { id: id }, function(data){
+            $('.inviteField[name="' + id + '"]').val()
+        }
+    }
+
+

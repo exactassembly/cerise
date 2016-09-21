@@ -70,21 +70,27 @@ def register():
 @app.route('/account', methods=['GET', 'POST'])
 @login_required
 def account():
-    groups = [[{groupID: x.id, projects: x.projects}] for x in current_user.groups]
-    if self_group:
+    groups = current_user.get_groups()
+    if current_user.self_group:
         if not current_user.self_group.aws:
             return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
-        else:
-            groups.append(self_group)
     return render_template('account.html', form=form, groups=groups)
 
 @app.route('/account/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
-    user = (current_user['username'], current_user['email'])
+    form = RegisterForm()
+    user = {username: current_user['username'], email: current_user['email']}
+    groups = current_user.get_groups(admin=True)
     if request.method == 'POST':
-        current_user.update_user()       
-    return render_template('profile.html', user=user)
+        if form.validate_on_submit():
+            current_user.update_user()       
+    return render_template('profile.html', rForm = form, user=user, groups=groups)
+
+@app.route('/account/invite', methods=['POST'])
+@login_required
+def invite():
+    
 
 @app.route('/account/add', methods=['GET', 'POST'])
 @login_required

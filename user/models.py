@@ -17,3 +17,11 @@ class User(db.Document, UserMixin):
         if request.form.get('password'):
             current_user['password'] = request.form.get('password')  
         current_user.save()  
+
+    def get_groups(self, admin=False):
+        if admin == False:
+            groups = [[{'id': x.id, 'name': x.name, 'projects': x.projects}] for x in current_user.groups]
+        if admin == True:
+            groups = [[{'id': x.id, 'projects': x.projects}] for x in current_user.groups if current_user in x.admins]
+        if current_user.self_group:
+            groups.append({'id': current_user.self_group.id, 'projects': current_user.self_group.projects))

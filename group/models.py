@@ -2,6 +2,7 @@ import os, subprocess
 
 from cerise import db
 from configparser import ConfigParser
+from urllib.parse import urlencode
 
 
 class AWS(db.EmbeddedDocument):
@@ -24,6 +25,7 @@ class Group(db.Document):
     pid = db.IntField()
     projects = db.EmbeddedDocumentListField(Project, max_length=50)
     users = db.ListField(db.ReferenceField('User'), max_length=100)
+    admins = db.ListField(db.ReferenceField('User'), max_length=100)
     referrals = db.EmbeddedDocumentListField(Referral, max_length=100)
 
     def create_master(self):
@@ -50,8 +52,11 @@ class Group(db.Document):
             raise ValueError('Referral not valid.')
 
     def generate_referral(self):
-        self.referrals.append(key=uuid4().hex)
-        Token(token=uuid4().hex).save()
+        key = uuid4().hex
+        token = uuid4().hex
+        self.referrals.append(key=key)
+        Token(token=token).save()
+        return {'key': key, 'token': token}
 
     def get_project(self, id):
         project = self.projects.get(id=id)
