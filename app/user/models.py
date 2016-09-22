@@ -1,5 +1,6 @@
 from flask_login import UserMixin
-from cerise import db
+from ..app import db
+from ..group.models import Group
 
 class User(db.Document, UserMixin):
     username = db.StringField(max_length=25)
@@ -24,4 +25,4 @@ class User(db.Document, UserMixin):
         if admin == True:
             groups = [[{'id': x.id, 'projects': x.projects}] for x in current_user.groups if current_user in x.admins]
         if current_user.self_group:
-            groups.append({'id': current_user.self_group.id, 'projects': current_user.self_group.projects))
+            groups.append({'id': current_user.self_group.id, 'projects': current_user.self_group.projects})

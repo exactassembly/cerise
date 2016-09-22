@@ -48,7 +48,8 @@ def register_user(form):
         create_master(group)
 
 def consume_token(token):
-    try Token.objects.get(token=token):
+    try:
+        Token.objects.get(token=token)
         Token.objects.get(token=token).delete()
     except:
         raise ValueError('Token not valid.')

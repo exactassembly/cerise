@@ -1,9 +1,10 @@
 import os, subprocess
 
-from cerise import db
+from ..app import db
+from ..project.models import Project
 from configparser import ConfigParser
 from urllib.parse import urlencode
-
+from datetime import datetime
 
 class AWS(db.EmbeddedDocument):
     keyID = db.StringField(max_length=255)
@@ -20,7 +21,7 @@ class Referral(db.EmbeddedDocument):
 
 class Group(db.Document):
     name = db.StringField(max_length=50)
-    port_offset = db.IntField(default=randint(1, 2000))
+    port_offset = db.SequenceField()
     aws = db.EmbeddedDocumentField(AWS)
     pid = db.IntField()
     projects = db.EmbeddedDocumentListField(Project, max_length=50)

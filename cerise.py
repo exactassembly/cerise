@@ -4,12 +4,10 @@ from flask_mongoengine import MongoEngine
 from flask_debugtoolbar import DebugToolbarExtension
 import os, boto3, subprocess, requests
 
-from models import *
-from forms import *
-from helpers import *
-
-app = Flask(__name__)
-app.config.from_envvar('CERISE_CONFIG')
+from app.app import *
+from app.models import *
+from app.forms import *
+from app.helpers import *
 
 login_manager = LoginManager()
 login_manager.init_app(app)
