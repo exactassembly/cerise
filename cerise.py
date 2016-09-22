@@ -101,7 +101,7 @@ def add():
             form = SubForm()
             if form.validate_on_submit():
                 try:
-                    group.add_project(parent=request.form.get('parent')) 
+                    group.add_project(form, parent=request.form.get('parent')) 
                 except ValueError as e:
                     flash(e)                   
             else:
@@ -110,7 +110,7 @@ def add():
             form = ProjectForm()
             if form.validate_on_submit():   
                 try:
-                    group.add_project() 
+                    group.add_project(form) 
                 except ValueError as e:
                     flash(e)
             else:
@@ -168,9 +168,9 @@ def project():
         if form.validate_on_submit():
             if urlparse(form.url.data).path:
                 if request.form.get('sub'):
-                    group.update_project(request.form.get('project'), request.form.get('sub'))
+                    group.update_project(request.form.get('project'), form, request.form.get('sub'))
                 else:
-                    group.update_project(request.form.get('project'))
+                    group.update_project(request.form.get('project'), form)
             else:
                 flash('URL is not valid.')
         else:

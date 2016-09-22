@@ -1,4 +1,4 @@
-from cerise import db
+from ..app import db
 
 class Step(db.EmbeddedDocument):
     action = db.StringField(max_length=255)

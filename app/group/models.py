@@ -63,7 +63,7 @@ class Group(db.Document):
         project = self.projects.get(id=id)
         return project 
 
-    def update_project(id, sub=None):
+    def update_project(id, form, sub=None):
         project = self.projects.get(id=id)
         if sub:
             project = project.subs.get(id=sub)
@@ -78,7 +78,7 @@ class Group(db.Document):
         else:
             subprocess.Popen(['buildbot', 'start'], cwd=directory)  
         
-    def add_project(self, parent=None):
+    def add_project(self, form, parent=None):
         if check_exists(form.name.data, parent):
             raise ValueError('Project name already exists.')
         if parent:
