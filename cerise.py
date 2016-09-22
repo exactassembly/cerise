@@ -87,10 +87,12 @@ def profile():
             current_user.update_user()       
     return render_template('profile.html', rForm = form, user=user, groups=groups)
 
-@app.route('/account/invite', methods=['POST'])
+@app.route('/account/refer', methods=['POST'])
 @login_required
 def invite():
-    
+    group = current_user.groups.get(id=request.form.get('id'))
+    referral = group.generate_referral()
+    return referral
 
 @app.route('/account/add', methods=['GET', 'POST'])
 @login_required

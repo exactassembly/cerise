@@ -54,8 +54,8 @@
     $(".invite").click(function(){
         var id = $(this).attr("id")
         $.post("/account/refer", { id: id }, function(data){
-            $('.inviteField[name="' + id + '"]').val()
-        }
-    }
-
+            $('.inviteField[name="' + id + '"]').val(data);
+        });
+    });
+</script>
 
