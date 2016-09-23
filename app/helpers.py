@@ -16,7 +16,7 @@ def flash_errors(formErrors):
 def verify_aws(awsID, awsKey):
     client = boto3.client(
         'iam',
-        aws_access_key_id=ID,
+        aws_access_key_id=awsID,
         aws_secret_access_key=awsKey
     )
     try:

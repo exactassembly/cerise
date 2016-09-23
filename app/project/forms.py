@@ -35,7 +35,7 @@ class AWSForm(Form):
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()
     ])
-    accessKey = StringField('access key', [
+    accessKey = PasswordField('access key', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()
     ])
