@@ -10,13 +10,13 @@ class User(db.Document, UserMixin):
     groups = db.ListField(db.ReferenceField(Group), max_length=25)
     self_group = db.ReferenceField(Group)
 
-    def update_user(self, request.form):
-        if request.form.get('username'):
-            self.username = request.form.get('username')
-        if request.form.get('email'):
-            self.email = request.form.get('email')
-        if request.form.get('password'):
-            self.password = request.form.get('password')  
+    def update_user(self, form):
+        if form.get('username'):
+            self.username = form.get('username')
+        if form.get('email'):
+            self.email = form.get('email')
+        if form.get('password'):
+            self.password = form.get('password')  
         self.save()  
 
     def get_groups(self, admin=False):

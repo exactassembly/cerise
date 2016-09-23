@@ -82,7 +82,7 @@ def profile():
     groups = current_user.get_groups(admin=True)
     if request.method == 'POST':
         if form.validate_on_submit():
-            current_user.update_user()       
+            current_user.update_user(request.form)       
     return render_template('profile.html', rForm = form, user=user, groups=groups)
 
 @app.route('/account/refer', methods=['POST'])
