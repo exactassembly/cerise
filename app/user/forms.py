@@ -19,4 +19,6 @@ class RegisterForm(Form):
         validators.Length(min=6, max=25, message='length must be > 6 and < 25'), 
         validators.EqualTo('confirm', message='passwords must match'),
     ])
+    group = StringField('group')
+    ref = StringField('ref')
     confirm = PasswordField('retype password')

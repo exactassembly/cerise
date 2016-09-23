@@ -1,7 +1,8 @@
 from bson.objectid import ObjectId
 from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from .user.models import User
+from .group.models import Group
 
 def flash_errors(formErrors):
     for field, errors in formErrors:
@@ -23,7 +24,7 @@ def verify_aws(awsID, awsKey):
     except ClientError:
         return False
 
-def load_group(group):
+def load_group(current_user, group):
     if current_user.self_group.id == group:
         return current_user.self_group
     elif ObjectId(current_user.id) in Group.objects.get(id=group):
@@ -38,14 +39,15 @@ def register_user(form):
         user.type = 'unpaid'
         add_to_group(user, form.group.data, form.ref.data)
     else:
-        group = Group(name=current_user.username)
+        group = Group(name=form.username.data)
         group.save()        
         user.self_group = group
         user.save()
         group.users.append(user)
         group.save()
         user.save()
-        create_master(group)
+        group.create_master()
+    return user
 
 def consume_token(token):
     try:

@@ -37,7 +37,7 @@ class Group(db.Document):
             pass
         c = ConfigParser()
         c.read(os.path.join(os.getcwd(), 'conf/default.conf'))
-        c.set('main', 'group', self.id)
+        c.set('main', 'group', str(self.id))
         with open(directory + '/group.conf', 'w') as f:
             c.write(f)
         subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(directory, 'master.cfg')])

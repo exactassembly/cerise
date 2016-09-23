@@ -36,7 +36,7 @@ def login():
         if ref['group'] and ref['key'] and ref['token']:
             try:
                 consume_token(ref['token'])
-                group = load_group(ref['group'])
+                group = load_group(current_user, ref['group'])
                 group.add_to_group(current_user)
             except ValueError as e:
                 return(e)
@@ -47,7 +47,7 @@ def login():
             if form.group.data and form.ref.data:
                 try:
                     consume_token(ref['token'])
-                    group = load_group(ref['group'])
+                    group = load_group(current_user, ref['group'])
                     group.add_to_group(current_user)
                 except ValueError as e:
                     return(e)
@@ -61,7 +61,7 @@ def register():
     form = RegisterForm()
     if not User.objects(username=form.username.data):
         if form.validate_on_submit():
-            register_user()
+            user = register_user(form)
             login_user(user)
             return redirect(url_for('account'))
 
@@ -71,7 +71,7 @@ def account():
     groups = current_user.get_groups()
     if current_user.self_group:
         if not current_user.self_group.aws:
-            return redirect(url_for(aws)) # require user to offer AWS information before accessing main UI
+            return redirect(url_for('aws')) # require user to offer AWS information before accessing main UI
     return render_template('account.html', form=form, groups=groups)
 
 @app.route('/account/profile', methods=['GET', 'POST'])
@@ -96,7 +96,7 @@ def invite():
 @login_required
 def add():
     if request.method == 'POST':
-        group = load_group(request.form.get('group'))        
+        group = load_group(current_user, request.form.get('group'))        
         if request.form.get('parent'):
             form = SubForm()
             if form.validate_on_submit():
@@ -119,7 +119,7 @@ def add():
     elif request.method == 'GET':
         if request.args.get('parent'):
             if request.form.get('group'):
-                group = load_group(request.args.get('group'))                        
+                group = load_group(current_user, request.args.get('group'))                        
                 parent = group.projects.get(name=request.args.get('parent'))
             else:
                 parent = current_user.projects.get(name=request.args.get('parent'))
@@ -149,7 +149,7 @@ def aws():
 def project():
     form = ProjectForm()
     if request.method == 'GET':
-        group = load_group(request.args.get('group'))        
+        group = load_group(current_user, request.args.get('group'))        
         try:
             project = group.get_project(request.args.get('project'))
         except ValueError as e:
@@ -158,7 +158,7 @@ def project():
             sub = project.subs.get(id=request.args.get('sub'))
         return render_template('project.html', project=project, sub=sub, form=form)
     elif request.method == 'POST':
-        group = load_group(request.form.get('group'))                
+        group = load_group(current_user, request.form.get('group'))                
         if request.form.get('action') == 'delete':
             if request.form.get('sub'):
                 group.delete_project(request.form.get('project'), request.form.get('sub'))
