@@ -26,9 +26,9 @@ def verify_aws(awsID, awsKey):
         return False
 
 def load_group(current_user, group):
-    if current_user.self_group.id == group:
+    if current_user.self_group.id == ObjectId(group):
         return current_user.self_group
-    elif ObjectId(current_user.id) in Group.objects.get(id=group):
+    elif current_user in Group.objects.get(id=group):
         return Group.objects.get(id=group)
     else:
         raise ValueError('User does not have access to group.')                          
