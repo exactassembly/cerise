@@ -87,7 +87,7 @@ def profile():
 @app.route('/account/refer', methods=['POST'])
 @login_required
 def invite():
-    group = current_user.groups.get(id=request.form.get('id'))
+    group = load_group(current_user, request.form.get('id'))
     referral = group.generate_referral()
     return referral
 
