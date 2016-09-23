@@ -135,9 +135,9 @@ def aws():
     if request.method == 'POST':
         if form.validate_on_submit():
             if verify_aws(form.keyID.data, form.accessKey.data):
-                awsLogin = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
-                current_user.aws = awsLogin
-                current_user.save()
+                aws = AWS(keyID=form.keyID.data, accessKey=form.accessKey.data)
+                current_user.self_group.aws = aws
+                current_user.self_group.save()
                 return redirect(url_for('account'))
             else:
                 flash('aws credentials not valid.')
