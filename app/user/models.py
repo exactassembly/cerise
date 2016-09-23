@@ -26,3 +26,4 @@ class User(db.Document, UserMixin):
             groups = [[{'id': x.id, 'projects': x.projects}] for x in self.groups if self in x.admins]
         if self.self_group:
             groups.append({'id': self.self_group.id, 'projects': self.self_group.projects})
+        return groups

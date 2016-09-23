@@ -71,13 +71,13 @@ def account():
     if current_user.self_group:
         if not current_user.self_group.aws:
             return redirect(url_for('aws')) # require user to offer AWS information before accessing main UI
-    return render_template('account.html', form=form, groups=groups)
+    return render_template('account.html', groups=groups)
 
 @app.route('/account/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     form = RegisterForm()
-    user = {username: current_user['username'], email: current_user['email']}
+    user = {'username': current_user['username'], 'email': current_user['email']}
     groups = current_user.get_groups(admin=True)
     if request.method == 'POST':
         if form.validate_on_submit():

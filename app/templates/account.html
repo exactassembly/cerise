@@ -27,7 +27,7 @@
     {% for group in groups %}
     <div class="panel list-group">  
         <div class="panel-heading">{{ group }}</div>             
-        {% for project in group['projects']' %}
+        {% for project in group['projects'] %}
             {% if project.subs.length > 0 %}
                 <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu">{{ project.name }}<span class="caret"></span></button>
                 <div class="panel-collapse collapse in" role="tabpanel" id="{{ project.name }}-sub">
