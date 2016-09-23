@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, flash, Res
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
 from flask_debugtoolbar import DebugToolbarExtension
-import os, boto3, subprocess, requests
+import os, subprocess, requests
 
 from app.app import *
 from app.models import *
@@ -11,7 +11,6 @@ from app.helpers import *
 
 login_manager = LoginManager()
 login_manager.init_app(app)
-ec2 = boto3.resource('ec2')
 
 @login_manager.user_loader
 def load_user(id):

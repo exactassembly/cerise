@@ -3,6 +3,7 @@ from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from .user.models import User
 from .group.models import Group
+import boto3
 
 def flash_errors(formErrors):
     for field, errors in formErrors:
