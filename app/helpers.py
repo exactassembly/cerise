@@ -1,8 +1,7 @@
 from bson.objectid import ObjectId
-from uuid import uuid4
 from werkzeug.security import generate_password_hash, check_password_hash
 from .user.models import User
-from .group.models import Group
+from .group.models import Group, Token
 import boto3
 
 def flash_errors(formErrors):

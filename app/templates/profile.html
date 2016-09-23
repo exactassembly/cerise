@@ -52,7 +52,7 @@
     $(".invite").click(function(){
         var id = $(this).attr("id")
         $.post("/account/refer", { id: id }, function(data){
-            $('.inviteField[name="' + id + '"]').val(data);
+            $('.inviteField[name="' + id + '"]').val(window.location.origin + data);
         });
     });
 </script>

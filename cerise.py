@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, flash, Res
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
 from flask_debugtoolbar import DebugToolbarExtension
+from urllib.parse import urlencode
 import os, subprocess, requests
 
 from app.app import *
@@ -30,9 +31,9 @@ def index():
 def login():
     form = LoginForm()
     rForm = RegisterForm()
-    ref = {'group': request.args.get('group'), 'ref': request.args.get('key'), 'token': request.args.get('token') }
+    ref = {'ref': request.args.get('key'), 'token': request.args.get('token') }
     if current_user.is_authenticated:
-        if ref['group'] and ref['key'] and ref['token']:
+        if ref['key'] and ref['token']:
             try:
                 consume_token(ref['token'])
                 group = load_group(current_user, ref['group'])
@@ -89,7 +90,8 @@ def profile():
 def invite():
     group = load_group(current_user, request.form.get('id'))
     referral = group.generate_referral()
-    return referral
+    payload = "/login?" + urlencode(referral)
+    return payload
 
 @app.route('/account/add', methods=['GET', 'POST'])
 @login_required

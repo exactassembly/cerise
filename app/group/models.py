@@ -3,12 +3,21 @@ import os, subprocess
 from ..app import db
 from ..project.models import Project
 from configparser import ConfigParser
-from urllib.parse import urlencode
 from datetime import datetime
+from uuid import uuid4
 
 class AWS(db.EmbeddedDocument):
     keyID = db.StringField(max_length=255)
     accessKey = db.StringField(max_length=255)
+
+class Token(db.Document):
+    token = db.StringField()
+    created = db.DateTimeField(default=datetime.now())
+    meta = {
+        'indexes': [
+            {'fields': ['created'], 'expireAfterSeconds': 86400}
+        ]
+    }
 
 class Referral(db.EmbeddedDocument):
     key = db.StringField()
@@ -55,7 +64,8 @@ class Group(db.Document):
     def generate_referral(self):
         key = uuid4().hex
         token = uuid4().hex
-        self.referrals.append(key=key)
+        self.referrals.append(Referral(key=key))
+        self.save()
         Token(token=token).save()
         return {'key': key, 'token': token}
 
