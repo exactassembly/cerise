@@ -8,7 +8,6 @@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
         <ul class="nav navbar-nav">
         {% if processLive %}
             <li id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></li>
@@ -20,10 +19,9 @@
             <li><a href="/account/profile">profile</a></li>
             <a href="/logout" class="btn btn-alert">logout</a>
         </ul>
-    </div>
 </nav>
-<div id="menu">
-
+<div class="container-fluid">
+<div id="menu" class="col-xs-2">
     <button type="button" class="list-group-item">buildlight</button>
     {% for group in groups %}
     <div class="panel list-group">  
@@ -46,7 +44,7 @@
         <button id="addProject" type="button">add project</button>
     </div>
 </div>
-<div id="main">
+<div id="main" class="col-xs-10">
 </div>
 <script>var user = '{{ user }}';</script>
 <script src="/static/js/account.js" type="text/javascript"></script>

@@ -1,3 +1,6 @@
 body {
     padding-top: 65px;
 }
+#main > iframe {
+    border: none;
+}

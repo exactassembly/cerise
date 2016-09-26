@@ -3,7 +3,7 @@ var keys;
 var buildsContext = {};
 
 function createTable(){
-    if (thisProject) { // if buildlight is invoked on /project page, where "thisProject" is defined inline
+    if (typeof thisProject !== 'undefined') { // if buildlight is invoked on /project page, where "thisProject" is defined inline
         var keys = [];
         keys.push(thisProject);
         if (subProjects){

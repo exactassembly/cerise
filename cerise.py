@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, flash, Res
 from flask_login import login_user, logout_user, current_user, login_required, LoginManager
 from flask_mongoengine import MongoEngine
 from flask_debugtoolbar import DebugToolbarExtension
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urljoin
 import os, subprocess, requests
 
 from app.app import *
@@ -73,6 +73,11 @@ def account():
         if not current_user.self_group.aws:
             return redirect(url_for('aws')) # require user to offer AWS information before accessing main UI
     return render_template('account.html', groups=groups)
+
+@app.route('/buildlight', methods=['GET'])
+@login_required
+def buildlight():
+  return render_template('buildlight.html')
 
 @app.route('/account/profile', methods=['GET', 'POST'])
 @login_required
@@ -191,18 +196,20 @@ def masterLog():
             yield line
     return Response(logGenerator(), mimetype='text/plain')
 
-@app.route('/api/builders/<path:path>', methods=['GET'])
+@app.route('/api/builders/<group>', methods=['GET'], defaults={'path': ''})
+@app.route('/api/builders/<group>/<path:path>', methods=['GET'])
 @login_required
-def builders(path):
-    port = sum([current_user.port_offset, 20000])
-    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/json', path))
+def builders(group, path):
+    group = load_group(current_user, group)
+    port = sum([group.port_offset, 20000])
+    r = requests.get(urljoin('http://127.0.0.1:' + str(port) + '/json', path))
     return(r)
 
 @app.route('/api/force/<builder>', methods=['GET'])
 @login_required
 def force(builder):
     port = sum([current_user.port_offset, 20000])
-    r = requests.get(urlparse.urljoin('127.0.0.1', str(port), '/builders', builder, 'force'))
+    r = requests.get(urljoin('127.0.0.1', str(port), '/builders', builder, 'force'))
     return(r)
 
 @app.route('/logout', methods=['POST'])

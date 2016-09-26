@@ -1,4 +1,4 @@
-$( "div #main" ).html('<iframe src="/static/buildlight.html"></iframe>');
+$( "div #main" ).html('<iframe src="/buildlight"></iframe>');
 
 $( "#addProject" ).click(function(){
     $( "div #main" ).html('<iframe src="/account/add"></iframe>');
