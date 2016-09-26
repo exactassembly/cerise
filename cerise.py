@@ -126,17 +126,14 @@ def add():
                 flash_errors(form.errors.items())    
         return render_template('new_project.html', form=form)  
     elif request.method == 'GET':
+        group = request.args.get('group')
         if request.args.get('parent'):
-            if request.form.get('group'):
-                group = load_group(current_user, request.args.get('group'))                        
-                parent = group.projects.get(name=request.args.get('parent'))
-            else:
-                parent = current_user.projects.get(name=request.args.get('parent'))
+            parent = request.args.get('parent')
             form = SubForm()   
-            return render_template('new_project.html', form=form, parent=parent)
+            return render_template('new_project.html', form=form, group=group, parent=parent)
         else:
             form = ProjectForm()
-            return render_template('new_project.html', form=form)            
+            return render_template('new_project.html', form=form, group=group)            
 
 @app.route('/account/aws', methods=['GET', 'POST'])
 @login_required

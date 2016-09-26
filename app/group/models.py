@@ -99,7 +99,7 @@ class Group(db.Document):
         for step in form.steps.data:
             newProject['steps'].append(Step(action=step['step'], workdir=step['workdir']))
         if parent:
-            self.projects.get(name=parent).subs.append(newProject)                    
+            self.projects.get(id=parent).subs.append(newProject)                    
         else:
             self.projects.append(newProject)
         self.save() 
