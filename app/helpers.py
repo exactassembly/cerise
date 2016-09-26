@@ -1,11 +1,12 @@
 from bson.objectid import ObjectId
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import flash
 from .user.models import User
 from .group.models import Group, Token
 import boto3
 
-def flash_errors(formErrors):
-    for field, errors in formErrors:
+def flash_errors(form):
+    for field, errors in form.errors.items():
         for error in errors:
             flash(u"Error in the %s field - %s" % (
                 getattr(form, field).label.text,

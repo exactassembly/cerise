@@ -1,4 +1,5 @@
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash
 from ..app import db
 from ..group.models import Group
 
@@ -16,7 +17,7 @@ class User(db.Document, UserMixin):
         if form.get('email'):
             self.email = form.get('email')
         if form.get('password'):
-            self.password = form.get('password')  
+            self.password = generate_password_hash(form.get('password'), method='pbkdf2:sha1', salt_length=16)
         self.save()  
 
     def get_groups(self, admin=False):
