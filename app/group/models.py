@@ -37,9 +37,9 @@ class Group(db.Document):
     users = db.ListField(db.ReferenceField('User'), max_length=100)
     admins = db.ListField(db.ReferenceField('User'), max_length=100)
     referrals = db.EmbeddedDocumentListField(Referral, max_length=100)
+    directory = os.path.join('/build', '_'.join(self.name.split()))
 
     def create_master(self):
-        directory = os.path.join('/build', '_'.join(self.name.split()))
         try:
             os.mkdir(directory)
         except:
@@ -82,7 +82,6 @@ class Group(db.Document):
         for step in form.steps.data:
             p['steps'].append(Step(action=step['step'], workdir=step['workdir']))
         group.save()
-        directory = os.path.join('/build', '_'.join(group.name.split()))    
         if processLive:
             subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)
         else:
@@ -104,7 +103,6 @@ class Group(db.Document):
         else:
             self.projects.append(newProject)
         self.save() 
-        directory = os.path.join('/build', '_'.join(self.name.split()))
         if len(self.projects) > 0 and process_live(self.pid): # reconfig
             subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
         else: # otherwise start buildbot first time

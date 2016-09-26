@@ -186,10 +186,11 @@ def project():
             flash_errors(form.errors.items())
         return redirect('/project?name=' + request.form.get('name'))
 
-@app.route('/account/masterlog', methods=['GET'])
+@app.route('/account/masterlog/<group>', methods=['GET'])
 @login_required
-def masterLog():
-    with open(os.path.join('/build', current_user.username, 'twistd.log')) as f:
+def masterLog(group):
+    group = load_group(current_user, group)
+    with open(os.path.join('/build', group.directory, 'twistd.log')) as f:
         payload = f.readlines()[-100:]
     def logGenerator():
         for line in payload:
