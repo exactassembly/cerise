@@ -27,7 +27,13 @@
     <button type="button" class="list-group-item">buildlight</button>
     {% for group in groups %}
     <div class="panel list-group">  
-        <div class="panel-heading">{{ group['name'] }}</div>             
+        <div class="panel-heading">{{ group['name'] }}
+            {% if processLive %}
+            <div id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></div>
+            {% elif not processLive %}
+            <div id="masterStatus">master status: stopped <a href="/account/masterlog">[log]</a></div>
+            {% endif %}    
+        </div>  
         {% for project in group['projects'] %}
             {% if project.subs.length > 0 %}
                 <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu">{{ project.name }}<span class="caret"></span></button>

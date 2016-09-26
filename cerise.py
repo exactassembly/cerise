@@ -165,7 +165,7 @@ def project():
             flash(e)
         if request.args.get('sub'):
             sub = project.subs.get(id=request.args.get('sub'))
-        return render_template('project.html', project=project, sub=sub, form=form)
+        return render_template('project.html', project=project, sub=sub, form=form, processLive=group.process_live())
     elif request.method == 'POST':
         group = load_group(current_user, request.form.get('group'))                
         if request.form.get('action') == 'delete':
