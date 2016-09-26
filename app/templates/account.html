@@ -8,6 +8,8 @@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">
+        <a href="/account" class="navbar-brand">cerise</a>
     <div class="container-fluid">
         <ul class="nav navbar-nav navbar-right">
             <li><a href="/account/profile">profile</a></li>
@@ -33,7 +35,7 @@
                 <div class="panel-collapse collapse in" role="tabpanel" id="{{ project.name }}-sub">
                     <button class="project-btn list-group-item" group="{{ group['id'] }}" project="{{ project.id }}">main</button>
                     {% for sub in project.subs %}
-                    <button class="project-btn list-group-item" group="{{ group['id'] }}" project="{{ project.id }}" subProj="{{ sub.name }}">{{ sub.name }}</button>
+                    <button class="project-btn list-group-item" group="{{ group['id'] }}" project="{{ project.id }}" sub="{{ sub.id }}">{{ sub.name }}</button>
                     {% endfor %}
                     <button class="addSub" group="{{ group['id'] }}" parent="{{ project.id }}" type="button">add project</button> 
                 </div>
@@ -42,7 +44,7 @@
             {% endif %}
         {% endfor %}
     {% endfor %}
-        <button id="addProject" type="button">add project</button>
+        <button id="addProject" type="button" group="{{ group['id'] }}">add project</button>
     </div>
 </div>
 <div id="view" class="col-xs-10">

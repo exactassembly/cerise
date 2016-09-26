@@ -1,21 +1,24 @@
 $( "div #view" ).html('<iframe src="/buildlight"></iframe>');
 
 $( "#addProject" ).click(function(){
-    $( "div #view" ).html('<iframe src="/account/add"></iframe>');
+    var group = $(this).attr('group');        
+    $( "div #view" ).html('<iframe src="/account/add?group=' + group + '></iframe>');
 });
 
 $( "#addSub" ).click(function(){
+    var group = $(this).attr('group');            
     var project = $(this).attr('project');    
-    $( "div #view" ).html('<iframe src="/account/add?parent=' + project + '></iframe>');
+    $( "div #view" ).html('<iframe src="/account/add?group=' + group + '&parent=' + project + '></iframe>');
 });
 
 $( ".project-btn" ).click(function(){
+    var group = $(this).attr('group');   
     var project = $(this).attr('project');
-    var sub = $(this).attr('subProj');
+    var sub = $(this).attr('sub');
     if (sub){
-        $( "div #view" ).html('<iframe src="/project?group=' + group + 'id=' + project + '&sub=' + sub + '></iframe>');
+        $( "div #view" ).html('<iframe src="/project?group=' + group + '&project=' + project + '&sub=' + sub + '></iframe>');
     }
     else {
-        $( "div #view" ).html('<iframe src="/project?group=' + group + 'id=' + project + '></iframe>');
+        $( "div #view" ).html('<iframe src="/project?group=' + group + '&project=' + project + '></iframe>');
     }
 });

@@ -21,8 +21,9 @@
 {% endwith %}    
 </div>
 <form id="newProject" action="/account/add" method="POST" style="display: none">
+    <input type="hidden" name="group" value="{{ group.id }}">
     {% if parent %}
-    <input type="hidden" name="parent" value="{{ parent.name }}">
+    <input type="hidden" name="parent" value="{{ parent.id }}">
     <h3>add subproject to {{ parent.name }}</h3>
     {% else %}
     <h3>add project</h3>
