@@ -8,6 +8,7 @@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
         <ul class="nav navbar-nav">
         {% if processLive %}
             <li id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></li>
@@ -17,8 +18,9 @@
         </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="/account/profile">profile</a></li>
-            <a href="/logout" class="btn btn-alert">logout</a>
+            <li><a href="/logout">logout</a></li>
         </ul>
+    </div>
 </nav>
 <div class="container-fluid">
 <div id="menu" class="col-xs-2">
