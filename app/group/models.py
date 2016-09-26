@@ -37,20 +37,20 @@ class Group(db.Document):
     users = db.ListField(db.ReferenceField('User'), max_length=100)
     admins = db.ListField(db.ReferenceField('User'), max_length=100)
     referrals = db.EmbeddedDocumentListField(Referral, max_length=100)
-    directory = os.path.join('/build', '_'.join(self.name.split()))
+    directory = db.StringField()
 
     def create_master(self):
         try:
-            os.mkdir(directory)
+            os.mkdir(self.directory)
         except:
             pass
         c = ConfigParser()
         c.read(os.path.join(os.getcwd(), 'conf/default.conf'))
         c.set('main', 'group', str(self.id))
-        with open(directory + '/group.conf', 'w') as f:
+        with open(self.directory + '/group.conf', 'w') as f:
             c.write(f)
-        subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(directory, 'master.cfg')])
-        subprocess.call(['buildbot', 'create-master'], cwd=directory)
+        subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(self.directory, 'master.cfg')])
+        subprocess.call(['buildbot', 'create-master'], cwd=self.directory)
 
     def add_to_group(self, user):
         if self.referrals.get(key=key):
@@ -83,9 +83,9 @@ class Group(db.Document):
             p['steps'].append(Step(action=step['step'], workdir=step['workdir']))
         group.save()
         if processLive:
-            subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)
+            subprocess.Popen(['buildbot', 'reconfig'], cwd=self.directory)
         else:
-            subprocess.Popen(['buildbot', 'start'], cwd=directory)  
+            subprocess.Popen(['buildbot', 'start'], cwd=self.directory)  
         
     def add_project(self, form, parent=None):
         if check_exists(form.name.data, parent):
@@ -104,9 +104,9 @@ class Group(db.Document):
             self.projects.append(newProject)
         self.save() 
         if len(self.projects) > 0 and process_live(self.pid): # reconfig
-            subprocess.Popen(['buildbot', 'reconfig'], cwd=directory)            
+            subprocess.Popen(['buildbot', 'reconfig'], cwd=self.directory)            
         else: # otherwise start buildbot first time
-            p = subprocess.Popen(['buildbot', 'start'], cwd=directory)  
+            p = subprocess.Popen(['buildbot', 'start'], cwd=self.directory)  
             self.pid = p.pid
             self.save()   
 

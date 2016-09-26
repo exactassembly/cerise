@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask import flash
 from .user.models import User
 from .group.models import Group, Token
-import boto3
+import boto3, os
 
 def flash_errors(form):
     for field, errors in form.errors.items():
@@ -41,6 +41,7 @@ def register_user(form):
         add_to_group(user, form.group.data, form.ref.data)
     else:
         group = Group(name=form.username.data)
+        group.directory = os.path.join('/build', '_'.join(group.name.split()))
         group.save()        
         user.self_group = group
         user.save()

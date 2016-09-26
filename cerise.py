@@ -192,10 +192,7 @@ def masterLog(group):
     group = load_group(current_user, group)
     with open(os.path.join('/build', group.directory, 'twistd.log')) as f:
         payload = f.readlines()[-100:]
-    def logGenerator():
-        for line in payload:
-            yield line
-    return Response(logGenerator(), mimetype='text/plain')
+    return Response(payload, mimetype='text/plain')
 
 @app.route('/api/builders/<group>', methods=['GET'], defaults={'path': ''})
 @app.route('/api/builders/<group>/<path:path>', methods=['GET'])
@@ -221,9 +218,8 @@ def logout():
 
 if __name__ == "__main__":
     for group in Group.objects:
-        directory = os.path.join('/build', '_'.join(group.name.split()))
         if len(group.projects) > 0:
-            p = subprocess.Popen(['buildbot', 'start'], cwd=directory)
+            p = subprocess.Popen(['buildbot', 'start'], cwd=group.directory)
             group.pid = p.pid
             group.save()
     app.run(host='0.0.0.0')

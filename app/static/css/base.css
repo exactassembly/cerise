@@ -1,6 +1,13 @@
 body {
     padding-top: 65px;
 }
-#main > iframe {
+#view > iframe {
     border: none;
+    width: 100%;
+}
+html, body, #main, #view, #view > iframe {
+    height: 100%;
+}
+html, body {
+    overflow: hidden;
 }

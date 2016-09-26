@@ -9,20 +9,13 @@
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
-        <ul class="nav navbar-nav">
-        {% if processLive %}
-            <li id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></li>
-        {% elif not processLive %}
-            <li id="masterStatus">master status: stopped <a href="/account/masterlog">[log]</a></li>
-        {% endif %}
-        </ul>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="/account/profile">profile</a></li>
             <li><a href="/logout">logout</a></li>
         </ul>
     </div>
 </nav>
-<div class="container-fluid">
+<div class="container-fluid" id="main">
 <div id="menu" class="col-xs-2">
     <button type="button" class="list-group-item">buildlight</button>
     {% for group in groups %}
@@ -31,7 +24,7 @@
             {% if processLive %}
             <div id="masterStatus">master status: live <a href="/account/masterlog">[log]</a></div>
             {% elif not processLive %}
-            <div id="masterStatus">master status: stopped <a href="/account/masterlog">[log]</a></div>
+            <div id="masterStatus">master status: stopped <a href="/account/masterlog/{{ group['id'] }}">[log]</a></div>
             {% endif %}    
         </div>  
         {% for project in group['projects'] %}
@@ -52,7 +45,7 @@
         <button id="addProject" type="button">add project</button>
     </div>
 </div>
-<div id="main" class="col-xs-10">
+<div id="view" class="col-xs-10">
 </div>
 <script>var user = '{{ user }}';</script>
 <script src="/static/js/account.js" type="text/javascript"></script>
