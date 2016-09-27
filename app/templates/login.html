@@ -36,8 +36,8 @@
             </div>
         </div>
         {{ form.csrf_token }}
-        <input type="hidden" name="group" value="{{ ref['id'] }}">
-        <input type="hidden" name="ref" value="{{ ref['key'] }}">                
+        <input type="hidden" name="key" value="{{ ref['key'] }}">
+        <input type="hidden" name="token" value="{{ ref['token'] }}">                
         <input type="submit" value="submit">
     </form>
 </div>
@@ -69,8 +69,8 @@
             </div>
         </div>
         {{ rForm.csrf_token }}
-        <input type="hidden" name="group" value="{{ ref['id'] }}">
-        <input type="hidden" name="key" value="{{ ref['key'] }}">        
+        <input type="hidden" name="key" value="{{ ref['key'] }}">
+        <input type="hidden" name="token" value="{{ ref['token'] }}">        
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-default">submit</button>
