@@ -39,24 +39,24 @@ def index():
 def login():
     form = LoginForm()
     rForm = RegisterForm()
-    ref = {'ref': request.args.get('key'), 'token': request.args.get('token') }
+    ref = {'key': request.args.get('key'), 'token': request.args.get('token') }
     if current_user.is_authenticated:
         if ref['key'] and ref['token']:
             try:
                 consume_token(ref['token'])
-                group = load_group(current_user, ref['group'])
-                group.add_to_group(current_user)
+                group = Group.objects.get(referrals__key=ref['key'])
+                group.add_to_group(current_user, ref['key'])
             except ValueError as e:
                 return(e)
         return redirect(url_for('index'))
     if request.method == 'POST' and form.validate_on_submit():
         user = User.objects.get(username__iexact=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
-            if form.group.data and form.ref.data:
+            if form.key.data and form.token.data:
                 try:
-                    consume_token(ref['token'])
-                    group = load_group(current_user, ref['group'])
-                    group.add_to_group(current_user)
+                    consume_token(form.token.data)
+                    group = Group.objects.get(referrals__key=form.key.data)
+                    group.add_to_group(current_user, form.key.data)
                 except ValueError as e:
                     return(e)
             user.authenticated = True
