@@ -53,7 +53,7 @@ class Group(db.Document):
         subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(self.directory, 'master.cfg')])
         subprocess.call(['buildbot', 'create-master'], cwd=self.directory)
 
-    def add_to_group(self, user):
+    def add_to_group(self, user, key):
         if self.referrals.get(key=key):
             user.groups.append(group)
             user.save()
