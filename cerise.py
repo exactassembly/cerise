@@ -126,9 +126,9 @@ def add():
                 flash_errors(form.errors.items())    
         return render_template('new_project.html', form=form)  
     elif request.method == 'GET':
-        group = request.args.get('group')
+        group = load_group(current_user, request.args.get('group'))
         if request.args.get('parent'):
-            parent = request.args.get('parent')
+            parent = group.projects.get(id=request.args.get('parent'))
             form = SubForm()   
             return render_template('new_project.html', form=form, group=group, parent=parent)
         else:
