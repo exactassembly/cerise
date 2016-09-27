@@ -1,10 +1,11 @@
 import os, subprocess
 
 from ..app import db
-from ..project.models import Project
+from ..project.models import Project, Step
 from configparser import ConfigParser
 from datetime import datetime
 from uuid import uuid4
+from mongoengine.errors import DoesNotExist
 
 class AWS(db.EmbeddedDocument):
     keyID = db.StringField(max_length=255)
@@ -88,7 +89,7 @@ class Group(db.Document):
             subprocess.Popen(['buildbot', 'start'], cwd=self.directory)  
         
     def add_project(self, form, parent=None):
-        if check_exists(form.name.data, parent):
+        if self.check_exists(form.name.data, parent):
             raise ValueError('Project name already exists.')
         if parent:
             newProject = SubProject(name=form.name.data)
@@ -103,7 +104,7 @@ class Group(db.Document):
         else:
             self.projects.append(newProject)
         self.save() 
-        if len(self.projects) > 0 and process_live(self.pid): # reconfig
+        if len(self.projects) > 0 and self.process_live(): # reconfig
             subprocess.Popen(['buildbot', 'reconfig'], cwd=self.directory)            
         else: # otherwise start buildbot first time
             p = subprocess.Popen(['buildbot', 'start'], cwd=self.directory)  
@@ -119,21 +120,25 @@ class Group(db.Document):
         self.save()
 
     def process_live(self):
+        if not self.pid:
+            return False
         try:
             os.kill(self.pid, 0)
             return True
         except OSError:
             return False
 
-    def check_exists(self, parent=None):
+    def check_exists(self, name, parent=None):
         if parent:
-            if self.projects.subs.get(projName) > 0:
+            try:
+                self.projects.subs.get(name=name)
                 return True
-            else:
+            except DoesNotExist:
                 return False
         else:
-            if self.projects.get(projName) > 0:
+            try:
+                self.projects.get(name=name)
                 return True
-            else:
+            except DoesNotExist:
                 return False
 

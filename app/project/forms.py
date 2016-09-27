@@ -13,13 +13,6 @@ class StepForm(wtForm):
     ])   
 
 class ProjectForm(Form):
-    id = StringField('project id', [
-        validators.Length(max=255, message='length must be shorter than 255 characters'),
-        validators.DataRequired()
-    ])
-    sub = StringField('sub-project', [
-        validators.Length(max=255, message='length must be shorter than 255 characters')
-    ])
     name = StringField('project name', [
         validators.Length(max=255, message='length must be shorter than 255 characters'),
         validators.DataRequired()

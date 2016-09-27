@@ -124,7 +124,7 @@ def add():
                     flash(e)
             else:
                 flash_errors(form)    
-        return render_template('new_project.html', form=form)  
+        return redirect(url_for('add'))  
     elif request.method == 'GET':
         group = load_group(current_user, request.args.get('group'))
         if request.args.get('parent'):

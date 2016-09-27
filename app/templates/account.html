@@ -31,7 +31,7 @@
             {% endif %}    
         </div>  
         {% for project in group['projects'] %}
-            {% if project.subs.length > 0 %}
+            {% if project.subs.count() > 0 %}
                 <button type="button" class="list-group-item" data-toggle="collapse" data-target="#{{ project.name }}-sub" data-parent="menu">{{ project.name }}<span class="caret"></span></button>
                 <div class="panel-collapse collapse in" role="tabpanel" id="{{ project.name }}-sub">
                     <button class="project-btn list-group-item" group="{{ group['id'] }}" project="{{ project.id }}">main</button>
