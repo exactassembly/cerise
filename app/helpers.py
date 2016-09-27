@@ -36,9 +36,10 @@ def load_group(current_user, group):
 def register_user(form):
     user = User(username=form.username.data, email=form.email.data)
     user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
-    if form.group.data and form.ref.data:
+    if form.key.data and form.token.data:
         user.type = 'unpaid'
-        add_to_group(user, form.group.data, form.ref.data)
+        group = Group.objects.get(referrals__key=form.key.data)
+        group.add_to_group(user, form.key.data)
     else:
         group = Group(name=form.username.data)
         group.directory = os.path.join('/build', '_'.join(group.name.split()))
