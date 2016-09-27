@@ -1,11 +1,6 @@
-
-* implement group creation and management
-
-* transaction tokens
-
-* user refer unpaid user
-* decide whether group-paid state exists on user or group, ui for deleting users from group, subscription state tracking
-* finish restructuring, imports
+* make sure that login view is passing NoneType for ref dict values
+* clean up project template
+* buildlight definitely needs rewriting
 
 ##backburn:
 

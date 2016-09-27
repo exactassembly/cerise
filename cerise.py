@@ -194,7 +194,10 @@ def project():
                 flash('URL is not valid.')
         else:
             flash_errors(form)
-        return redirect('/project?name=' + request.form.get('name'))
+        query = {'group': request.form.get('group'), 'project': request.form.get('project')}
+        if request.form.get('sub'):
+            query['sub'] = request.form.get('sub')
+        return redirect('/project' + urlencode(query)
 
 @app.route('/account/masterlog/<group>', methods=['GET'])
 @login_required
