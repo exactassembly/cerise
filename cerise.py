@@ -52,11 +52,11 @@ def login():
     if request.method == 'POST' and form.validate_on_submit():
         user = User.objects.get(username__iexact=form.username.data)
         if user and check_password_hash(user.password, form.password.data):
-            if form.key.data and form.token.data:
+            if request.form.get('key') and request.form.get('token'):
                 try:
-                    consume_token(form.token.data)
-                    group = Group.objects.get(referrals__key=form.key.data)
-                    group.add_to_group(current_user, form.key.data)
+                    consume_token(request.form.get('token'))
+                    group = Group.objects.get(referrals__key=request.form.get('key'))
+                    group.add_to_group(current_user, request.form.get('key'))
                 except ValueError as e:
                     return(e)
             user.authenticated = True
@@ -69,7 +69,7 @@ def register():
     form = RegisterForm()
     if not User.objects(username=form.username.data):
         if form.validate_on_submit():
-            user = register_user(form)
+            user = register_user(form, request)
             login_user(user)
             return redirect(url_for('account'))
         else:

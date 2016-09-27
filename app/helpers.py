@@ -33,13 +33,13 @@ def load_group(current_user, group):
     else:
         raise ValueError('User does not have access to group.')                          
 
-def register_user(form):
+def register_user(form, request):
     user = User(username=form.username.data, email=form.email.data)
     user.password = generate_password_hash(form.password.data, method='pbkdf2:sha1', salt_length=16)
-    if form.key.data and form.token.data:
+    if request.form.get('key') != 'None' and request.form.get('token') != 'None': # 'None' is a string!
         user.type = 'unpaid'
-        group = Group.objects.get(referrals__key=form.key.data)
-        group.add_to_group(user, form.key.data)
+        group = Group.objects.get(referrals__key=request.form.get('key'))
+        group.add_to_group(user, request.form.get('key'))
     else:
         group = Group(name=form.username.data)
         group.directory = os.path.join('/build', '_'.join(group.name.split()))
