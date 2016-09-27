@@ -2,7 +2,7 @@ $( "div #view" ).html('<iframe src="/buildlight"></iframe>');
 
 $( "#addProject" ).click(function(){
     var group = $(this).attr('group');        
-    $( "div #view" ).html('<iframe src="/account/add?group=' + group + '></iframe>');
+    $( "div #view" ).html('<iframe src="/account/add?group=' + group + '"></iframe>');
 });
 
 $( "#addSub" ).click(function(){

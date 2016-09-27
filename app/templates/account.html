@@ -8,9 +8,10 @@
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
     <div class="navbar-header">
         <a href="/account" class="navbar-brand">cerise</a>
-    <div class="container-fluid">
+    </div>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="/account/profile">profile</a></li>
             <li><a href="/logout">logout</a></li>
@@ -43,8 +44,8 @@
             <button type="button" class="list-group-item">{{ project.name }}</button>
             {% endif %}
         {% endfor %}
-    {% endfor %}
         <button id="addProject" type="button" group="{{ group['id'] }}">add project</button>
+    {% endfor %}
     </div>
 </div>
 <div id="view" class="col-xs-10">

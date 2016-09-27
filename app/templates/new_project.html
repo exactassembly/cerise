@@ -20,7 +20,7 @@
   {% endif %}
 {% endwith %}    
 </div>
-<form id="newProject" action="/account/add" method="POST" style="display: none">
+<form id="newProject" action="/account/add" method="POST">
     <input type="hidden" name="group" value="{{ group.id }}">
     {% if parent %}
     <input type="hidden" name="parent" value="{{ parent.id }}">
