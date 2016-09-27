@@ -114,7 +114,7 @@ def add():
                 except ValueError as e:
                     flash(e)                   
             else:
-                flash_errors(form.errors.items())
+                flash_errors(form)
         else:
             form = ProjectForm()
             if form.validate_on_submit():   
@@ -123,7 +123,7 @@ def add():
                 except ValueError as e:
                     flash(e)
             else:
-                flash_errors(form.errors.items())    
+                flash_errors(form)    
         return render_template('new_project.html', form=form)  
     elif request.method == 'GET':
         group = load_group(current_user, request.args.get('group'))
@@ -180,7 +180,7 @@ def project():
             else:
                 flash('URL is not valid.')
         else:
-            flash_errors(form.errors.items())
+            flash_errors(form)
         return redirect('/project?name=' + request.form.get('name'))
 
 @app.route('/account/masterlog/<group>', methods=['GET'])
