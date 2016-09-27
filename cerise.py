@@ -13,6 +13,14 @@ from app.helpers import *
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+@app.before_first_request
+def init_masters():
+    for group in Group.objects:
+        if len(group.projects) > 0:
+            p = subprocess.Popen(['buildbot', 'start'], cwd=group.directory)
+            group.pid = p.pid
+            group.save()
+
 @login_manager.user_loader
 def load_user(id):
     try:
@@ -64,6 +72,11 @@ def register():
             user = register_user(form)
             login_user(user)
             return redirect(url_for('account'))
+        else:
+            flash_errors(form)
+    else:
+        flash('user already exists.')
+    return redirect(url_for('login'))
 
 @app.route('/account', methods=['GET', 'POST'])
 @login_required

@@ -8,8 +8,8 @@ class User(db.Document, UserMixin):
     email = db.StringField(max_length=255)
     password = db.StringField(max_length=255)
     active = db.BooleanField(default=True)
-    groups = db.ListField(db.ReferenceField(Group), max_length=25)
-    self_group = db.ReferenceField(Group)
+    groups = db.ListField(db.ReferenceField(Group, reverse_delete_rule=4), max_length=25)
+    self_group = db.ReferenceField(Group, reverse_delete_rule=4)
 
     def update_user(self, form):
         if form.get('username'):

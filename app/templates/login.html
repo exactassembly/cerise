@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<script src="/static/js/spin.min.js"></script>
+<script type="text/javascript">function spinner(){new Spinner().spin(document.getElementById('spinner'));};</script>
 </head>
 <body>
+<div id="spinner" style="position: fixed; top: 50%; left: 50%"></div>
+<div class="container">
+<div class="row">
+<div class="col-xs-offset-2 col-xs-8">
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+        <div class="alert alet-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>error:</strong>{{ message }}
+        </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 <div id="login" style="display: inline-block; padding-right: 25px; border-right: thin solid; height: 150px">
     <div>login</div>
     <form class="form-horizontal" method="POST" action="/login">
@@ -28,7 +43,7 @@
 </div>
 <div id="register" style="display: inline-block; padding-left: 25px; vertical-align: top">
     <div>register</div>
-    <form class="form-horizontal" method="POST" action="/register">
+    <form class="form-horizontal" method="POST" action="/register" onsubmit="spinner()">
         <div class="form-group">   
             {{ rForm.email.label(class="col-sm-3 control-label") }}    
             <div class="col-sm-9">
@@ -63,23 +78,8 @@
         </div>
     </form>
 </div>
-<p>
-    {% if form.errors %}
-    <ul class=errors>
-    {% for error in form.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-</p>
-<p>
-    {% if rForm.errors %}
-    <ul class=errors>
-    {% for error in rForm.errors %}
-      <li>{{ error }}</li>
-    {% endfor %}
-    </ul>
-    {% endif %}
-</p>
+</div>
+</div>
+</div>
 </body>
 </html>
