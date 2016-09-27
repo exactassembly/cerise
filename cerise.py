@@ -124,7 +124,7 @@ def add():
                     flash(e)
             else:
                 flash_errors(form)    
-        return redirect(url_for('add'))  
+        return redirect(url_for('add')) 
     elif request.method == 'GET':
         group = load_group(current_user, request.args.get('group'))
         if request.args.get('parent'):
@@ -214,9 +214,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == "__main__":
-    for group in Group.objects:
-        if len(group.projects) > 0:
-            p = subprocess.Popen(['buildbot', 'start'], cwd=group.directory)
-            group.pid = p.pid
-            group.save()
     app.run(host='0.0.0.0')
