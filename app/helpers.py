@@ -6,6 +6,7 @@ from .group.models import Group, Token
 import boto3, os
 
 def flash_errors(form):
+    """Helper function for passing form errors as flask 'flashes'"""
     for field, errors in form.errors.items():
         for error in errors:
             flash(u"Error in the %s field - %s" % (
@@ -14,6 +15,7 @@ def flash_errors(form):
             ))
 
 def verify_aws(awsID, awsKey):
+    """Primitive aws verification, does not yet check for IAM permissions"""
     client = boto3.client(
         'iam',
         aws_access_key_id=awsID,
@@ -26,6 +28,7 @@ def verify_aws(awsID, awsKey):
         return False
 
 def load_group(current_user, group):
+    """Helper function for verifying user has access to provided group ID"""
     if current_user.self_group.id == ObjectId(group):
         return current_user.self_group
     elif current_user in Group.objects.get(id=group):

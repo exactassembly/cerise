@@ -15,6 +15,9 @@ login_manager.init_app(app)
 
 @app.before_first_request
 def init_masters():
+    """This is decorated with "before_first_request" until I find a better
+    solution for the double-initialization.
+    """
     for group in Group.objects:
         if len(group.projects) > 0:
             p = subprocess.Popen(['buildbot', 'start'], cwd=group.directory)
@@ -94,7 +97,7 @@ def buildlight():
 
 @app.route('/account/profile', methods=['GET', 'POST'])
 @login_required
-def profile():
+def profile():              # need to add aws reconfiguration somehow and allow for individual field updates
     form = RegisterForm()
     user = {'username': current_user['username'], 'email': current_user['email']}
     groups = current_user.get_groups(admin=True)
@@ -150,8 +153,8 @@ def add():
 
 @app.route('/account/aws', methods=['GET', 'POST'])
 @login_required
-def aws():
-    form = AWSForm()
+def aws():              # this view needs a global redirect if no AWS auth exists or
+    form = AWSForm()    # otherwise explicit redirects from all possible views.
     if request.method == 'POST':
         if form.validate_on_submit():
             if verify_aws(form.keyID.data, form.accessKey.data):
@@ -165,7 +168,7 @@ def aws():
 
 @app.route('/project', methods=['GET', 'POST'])
 @login_required
-def project():
+def project():              # this function will require testing and implementation fixes
     form = ProjectForm()
     if request.method == 'GET':
         group = load_group(current_user, request.args.get('group'))        
@@ -197,11 +200,11 @@ def project():
         query = {'group': request.form.get('group'), 'project': request.form.get('project')}
         if request.form.get('sub'):
             query['sub'] = request.form.get('sub')
-        return redirect('/project' + urlencode(query)
+        return redirect('/project' + urlencode(query))
 
 @app.route('/account/masterlog/<group>', methods=['GET'])
 @login_required
-def masterLog(group):
+def masterLog(group):               # this view may be replaced with an nginx log proxy of some sort
     group = load_group(current_user, group)
     with open(os.path.join('/build', group.directory, 'twistd.log')) as f:
         payload = f.readlines()[-100:]
