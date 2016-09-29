@@ -1,6 +1,7 @@
 * make sure that login view is passing NoneType for ref dict values
 * clean up project template
 * buildlight definitely needs rewriting
+* many views are not using wtfforms for hidden fields
 
 ##backburn:
 

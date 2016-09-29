@@ -53,7 +53,7 @@ class Group(db.Document):
         subprocess.call(['ln', '-s', os.path.join(os.getcwd(), 'conf/caiman.cfg'), os.path.join(self.directory, 'master.cfg')])
         subprocess.call(['buildbot', 'create-master'], cwd=self.directory)
 
-    def add_to_group(self, user, key):
+    def add_to_group(self, user, key): # only to be used post-token-consumption
         if self.referrals.get(key=key):
             user.groups.append(group)
             user.save()
@@ -70,7 +70,7 @@ class Group(db.Document):
         Token(token=token).save()
         return {'key': key, 'token': token}
 
-    def get_project(self, id):
+    def get_project(self, id): # not sure what this is for ??
         project = self.projects.get(id=id)
         return project 
 
@@ -111,7 +111,7 @@ class Group(db.Document):
             self.pid = p.pid
             self.save()   
 
-    def delete_project(self, id, sub=None):
+    def delete_project(self, id, sub=None): # until tested, assuming a parent project must be queried before pulling the sub
         project = self.projects.get(id=id)
         if sub:
             project.update(pull__subs__id=sub)
@@ -123,7 +123,7 @@ class Group(db.Document):
         if not self.pid:
             return False
         try:
-            os.kill(self.pid, 0)
+            os.kill(self.pid, 0)  # kill used with "0" argument to verify process existence only
             return True
         except OSError:
             return False

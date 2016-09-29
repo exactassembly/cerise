@@ -11,7 +11,7 @@ class User(db.Document, UserMixin):
     groups = db.ListField(db.ReferenceField(Group, reverse_delete_rule=4), max_length=25)
     self_group = db.ReferenceField(Group, reverse_delete_rule=4)
 
-    def update_user(self, form):
+    def update_user(self, form): # profile update view will need improvement, right now requires all fields
         if form.get('username'):
             self.username = form.get('username')
         if form.get('email'):
@@ -21,6 +21,7 @@ class User(db.Document, UserMixin):
         self.save()  
 
     def get_groups(self, admin=False):
+        """Helper function returning a list of group objects for display in account views"""
         if admin == False:
             groups = [[{'id': x.id, 'name': x.name, 'projects': x.projects}] for x in self.groups]
         if admin == True:
