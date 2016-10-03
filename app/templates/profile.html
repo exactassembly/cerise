@@ -10,7 +10,7 @@
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     {% for message in messages %}
-        <div class="alert alet-warning alert-dismissible" role="alert">
+        <div class="alert alert-warning alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong>error:</strong>{{ message }}
         </div>
@@ -54,13 +54,13 @@
     {% for group in groups %}
     <div>
         <input type="text" class="inviteField" name="{{ group['id'] }}" value="{{ group['name'] }}" readonly>
-        <button type="button" class="invite" id="{{ group['id'] }}">invite</button>
+        <button type="button" class="invite" data-id="{{ group['id'] }}">invite</button>
     </div>
     {% endfor %}
 </div>
 <script type="text/javascript">
     $(".invite").click(function(){
-        var id = $(this).attr("id")
+        var id = $(this).attr("data-id")
         $.post("/account/refer", { id: id }, function(data){
             $('.inviteField[name="' + id + '"]').val(window.location.origin + data);
         });
