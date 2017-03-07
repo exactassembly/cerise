@@ -1,0 +1,5 @@
+flask
+flask_login
+flask_mongoengine
+flask_debugtoolbar
+boto3
