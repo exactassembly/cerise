@@ -5,10 +5,12 @@ from flask_debugtoolbar import DebugToolbarExtension
 from urllib.parse import urlencode, urljoin
 import os, subprocess, requests
 
-from app.app import *
-from app.models import *
-from app.forms import *
-from app.helpers import *
+from app.app import app, db
+from app.models import Step, SubProject, Project, \
+    AWS, Token, Referral, Group, User
+from app.forms import AWSForm, LoginForm, ProjectForm, RegisterForm, StepForm
+from app.helpers import check_password_hash, consume_token, flash, flash_errors, \
+    generate_password_hash, load_group, os, register_user, verify_aws
 
 login_manager = LoginManager()
 login_manager.init_app(app)
